@@ -1,2000 +1,1133 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>עץ המשפחה · משפחת נתניה</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Heebo:wght@200;300;400;500;700;900&family=Suez+One&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Suez+One&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    /* ══════════════════════════════════════════════════
-   משפחת משה וציפי · עץ משפחה
-   ══════════════════════════════════════════════════ */
-
-    @property --angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
+    /* ═══════════════════════════════════════════════
+       משפחת נתניה · עץ משפחה
+       כל האנימציות על transform/opacity בלבד — GPU
+       ═══════════════════════════════════════════════ */
 
     :root {
-      --bg-deep: #fdf7ec;
-      --bg-card: rgba(255, 255, 255, 0.72);
-      --gold: #e29a0b;
-      --gold-soft: #b07310;
-      --gold-dim: rgba(226, 154, 11, 0.3);
-      --ink: #26243e;
-      --ink-dim: #6b6a85;
-      --rose: #ef476f;
-      --teal: #00a896;
-      --silver: #64748c;
-      --font-body: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      --font-title: 'Suez One', 'Heebo', serif;
-      --font-serif: 'Frank Ruhl Libre', 'Times New Roman', serif;
+      --bg: #FBF7EF;
+      --card: #FFFFFF;
+      --gold: #C89B2A;
+      --gold-deep: #A87F14;
+      --gold-light: #EFD98F;
+      --gold-glow: rgba(200, 155, 42, 0.35);
+      --ink: #3A342A;
+      --muted: #8A8273;
+      --rose: #E0656F;
+      --green: #4F7A44;
+      --green-soft: #F4F8EF;
+      --green-border: #CBDFBC;
+      --slate: #6C757D;
+      --shadow: rgba(139, 115, 85, 0.1);
+      --shadow-hover: rgba(139, 115, 85, 0.22);
+
+      --font-body: 'Heebo', 'Segoe UI', sans-serif;
+      --font-title: 'Suez One', serif;
+      --font-serif: 'Frank Ruhl Libre', serif;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font-body);
-      background: var(--bg-deep);
       color: var(--ink);
-      overflow-x: hidden;
       min-height: 100vh;
+      overflow-x: hidden;
+      background-color: var(--bg);
+      /* רקע סטטי — מצויר פעם אחת בלבד */
+      background-image:
+        radial-gradient(ellipse 70% 45% at 50% -5%, rgba(239, 217, 143, 0.4), transparent 60%),
+        radial-gradient(ellipse 45% 35% at 92% 100%, rgba(203, 223, 188, 0.45), transparent 65%),
+        radial-gradient(ellipse 40% 30% at 5% 85%, rgba(240, 200, 190, 0.3), transparent 60%);
+      background-attachment: fixed;
     }
 
-    ::selection {
-      background: rgba(245, 158, 11, 0.4);
-      color: #26243e;
-    }
+    ::selection { background: var(--gold-light); color: var(--ink); }
 
-    /* ─── פס גלילה מעוצב ─── */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f4ead6;
-    }
-
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #F2ECDE; }
     ::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #f7b733, #e2790b);
+      background: linear-gradient(180deg, var(--gold-light), var(--gold));
       border-radius: 8px;
-      border: 2px solid #f4ead6;
+      border: 2px solid #F2ECDE;
     }
 
-    /* ══════════════ שכבות רקע ══════════════ */
-
-    .sky {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 55% at 50% -10%, rgba(255, 179, 71, 0.4), transparent 60%),
-        radial-gradient(ellipse 60% 45% at 85% 110%, rgba(123, 92, 255, 0.26), transparent 65%),
-        radial-gradient(ellipse 55% 40% at 8% 95%, rgba(0, 168, 150, 0.24), transparent 60%);
-    }
-
-    .aurora {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(110px);
-      opacity: .55;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .aurora.a1 {
-      width: 55vw;
-      height: 55vw;
-      top: -18vw;
-      right: -12vw;
-      background: radial-gradient(circle, rgba(255, 154, 26, .38), transparent 65%);
-      animation: drift1 26s ease-in-out infinite alternate;
-    }
-
-    .aurora.a2 {
-      width: 48vw;
-      height: 48vw;
-      bottom: -15vw;
-      left: -14vw;
-      background: radial-gradient(circle, rgba(56, 182, 255, .34), transparent 65%);
-      animation: drift2 32s ease-in-out infinite alternate;
-    }
-
-    .aurora.a3 {
-      width: 36vw;
-      height: 36vw;
-      top: 42%;
-      left: 30%;
-      background: radial-gradient(circle, rgba(255, 94, 126, .3), transparent 65%);
-      animation: drift3 38s ease-in-out infinite alternate;
-    }
-
-    @keyframes drift1 {
-      to {
-        transform: translate(-14vw, 12vh) scale(1.2);
-      }
-    }
-
-    @keyframes drift2 {
-      to {
-        transform: translate(12vw, -10vh) scale(1.15);
-      }
-    }
-
-    @keyframes drift3 {
-      to {
-        transform: translate(-8vw, -14vh) scale(0.85);
-      }
-    }
-
-    #dust {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    /* ══════════════ מסך פתיחה ══════════════ */
-
-    .intro {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: var(--bg-deep);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 22px;
-      transition: opacity 1s ease, visibility 1s;
-    }
-
-    .intro.gone {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    .intro-mark {
-      font-family: var(--font-title);
-      font-size: clamp(2rem, 6vw, 3.6rem);
-      background: linear-gradient(120deg, #e2790b, #f7b733 30%, #ef476f 55%, #7b5cff 80%, #e2790b 100%);
-      background-size: 250% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: .35em;
-      padding-right: .35em;
-      animation: introText 2.4s ease both, shimmer 3s linear infinite;
-    }
-
-    .intro-line {
-      height: 1px;
-      width: 0;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      animation: introLine 1.8s .3s ease forwards;
-    }
-
-    @keyframes introText {
-      0% {
-        opacity: 0;
-        letter-spacing: .8em;
-        filter: blur(8px);
-      }
-
-      100% {
-        opacity: 1;
-        letter-spacing: .35em;
-        filter: blur(0);
-      }
-    }
-
-    @keyframes introLine {
-      to {
-        width: min(420px, 70vw);
-      }
-    }
-
-    /* ══════════════ פס התקדמות ══════════════ */
-
+    /* ─── פס התקדמות (transform בלבד) ─── */
     .progress {
       position: fixed;
-      top: 0;
-      right: 0;
+      top: 0; right: 0; left: 0;
       height: 3px;
-      width: 0;
-      background: linear-gradient(90deg, #f7b733, #ef476f, #7b5cff);
-      z-index: 90;
-      box-shadow: 0 0 12px rgba(239, 71, 111, 0.55);
-      transition: width .1s linear;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--gold-deep));
+      transform: scaleX(0);
+      transform-origin: right;
+      z-index: 50;
     }
 
-    /* ══════════════ HERO ══════════════ */
+    /* ─── כתמי אור ברקע — blur נצבע פעם אחת, מונפש ב-transform ─── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .55;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob.b1 {
+      width: 44vw; height: 44vw; top: -16vw; right: -10vw;
+      background: radial-gradient(circle, rgba(231, 197, 90, 0.4), transparent 65%);
+      animation: drift1 34s ease-in-out infinite alternate;
+    }
+    .blob.b2 {
+      width: 38vw; height: 38vw; bottom: -14vw; left: -12vw;
+      background: radial-gradient(circle, rgba(143, 180, 120, 0.35), transparent 65%);
+      animation: drift2 40s ease-in-out infinite alternate;
+    }
+    .blob.b3 {
+      width: 26vw; height: 26vw; top: 45%; left: 20%;
+      background: radial-gradient(circle, rgba(224, 130, 120, 0.22), transparent 65%);
+      animation: drift1 46s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes drift1 { to { transform: translate(-7vw, 6vh); } }
+    @keyframes drift2 { to { transform: translate(8vw, -7vh); } }
+
+    /* ─── גחליליות — CSS בלבד, בלי JS בכל פריים ─── */
+    .dots { pointer-events: none; }
+    .dots span {
+      position: fixed;
+      bottom: -4vh;
+      right: var(--x);
+      width: var(--s); height: var(--s);
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 0 10px 2px var(--c);
+      opacity: 0;
+      animation: rise var(--t) linear var(--dl) infinite;
+      z-index: 0;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0); opacity: 0; }
+      10%  { opacity: .45; }
+      85%  { opacity: .2; }
+      100% { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    /* ═══════════════ HERO ═══════════════ */
 
     .hero {
       position: relative;
-      z-index: 2;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      z-index: 1;
       text-align: center;
-      padding: 40px 20px 90px;
+      padding: 80px 20px 40px;
     }
 
-    .hero-crest {
-      width: 110px;
-      height: 110px;
-      margin-bottom: 28px;
-      animation: floaty 5s ease-in-out infinite;
-      filter: drop-shadow(0 0 22px rgba(226, 154, 11, 0.45));
+    .tree-icon {
+      width: 74px; height: 74px;
+      margin: 0 auto 18px;
+      color: var(--gold);
+      filter: drop-shadow(0 4px 14px var(--gold-glow));
+      animation: float 4.5s ease-in-out infinite;
     }
-
-    @keyframes floaty {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-12px);
-      }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .hero-eyebrow {
       font-size: .95rem;
-      font-weight: 300;
-      letter-spacing: .55em;
-      padding-right: .55em;
-      color: var(--gold-soft);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-      opacity: .9;
+      letter-spacing: .45em;
+      padding-right: .45em;
+      color: var(--gold-deep);
+      font-weight: 500;
+      margin-bottom: 14px;
+      animation: fadeInDown .9s ease-out both;
     }
 
     .hero-title {
       font-family: var(--font-title);
-      font-size: clamp(3rem, 10vw, 7rem);
+      font-size: clamp(3rem, 9vw, 6.2rem);
       line-height: 1.1;
-      background: linear-gradient(120deg, #f59e0b 0%, #ef476f 30%, #d94fd4 50%, #7b5cff 70%, #f59e0b 100%);
-      background-size: 220% auto;
+      margin-bottom: 14px;
+      background: linear-gradient(115deg, var(--gold-deep) 10%, var(--gold) 35%, #E9CD6C 50%, var(--gold) 65%, var(--gold-deep) 90%);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
-      color: transparent;
-      animation: shimmer 5s linear infinite;
-      text-shadow: 0 0 80px rgba(239, 71, 111, 0.25);
+      -webkit-text-fill-color: transparent;
+      animation: zoomIn 1s cubic-bezier(.2, .8, .2, 1) both, sheenText 7s linear 1.2s infinite;
+      filter: drop-shadow(0 4px 10px rgba(200, 155, 42, 0.18));
     }
-
-    @keyframes shimmer {
-      to {
-        background-position: 220% center;
-      }
-    }
+    @keyframes sheenText { to { background-position: -200% center; } }
 
     .hero-sub {
-      margin-top: 20px;
       font-family: var(--font-serif);
-      font-size: clamp(1.15rem, 2.6vw, 1.6rem);
-      font-weight: 300;
-      color: var(--ink-dim);
+      font-size: clamp(1.2rem, 3vw, 1.75rem);
+      color: var(--muted);
+      animation: fadeInUp .9s ease-out .25s both;
     }
+    .hero-sub strong { color: var(--ink); }
 
-    .hero-sub strong {
-      color: var(--ink);
-      font-weight: 500;
-    }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-18px); } }
+    @keyframes fadeInUp   { from { opacity: 0; transform: translateY(18px); } }
+    @keyframes zoomIn     { from { opacity: 0; transform: scale(.92); } }
 
-    .hero-divider {
-      margin: 34px auto 0;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--gold);
-    }
-
-    .hero-divider::before,
-    .hero-divider::after {
-      content: '';
-      height: 1px;
-      width: min(120px, 22vw);
-      background: linear-gradient(90deg, transparent, var(--gold));
-    }
-
-    .hero-divider::after {
-      background: linear-gradient(90deg, var(--gold), transparent);
-    }
-
-    /* ─── מוני סטטיסטיקה ─── */
-
+    /* ─── סטטיסטיקות ─── */
     .stats {
-      margin-top: 52px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+      margin-top: 42px;
+      animation: fadeInUp .9s ease-out .5s both;
     }
-
     .stat {
-      min-width: 150px;
-      padding: 22px 30px;
+      background: var(--card);
+      border: 1px solid rgba(200, 155, 42, 0.25);
+      padding: 18px 28px;
       border-radius: 18px;
-      background: var(--bg-card);
-      border: 1px solid var(--gold-dim);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: transform .4s cubic-bezier(.2, .8, .25, 1), box-shadow .4s, border-color .4s;
+      min-width: 138px;
+      box-shadow: 0 6px 20px var(--shadow);
+      transition: transform .35s cubic-bezier(.2, .8, .3, 1.2), box-shadow .35s ease, border-color .35s ease;
     }
-
     .stat:hover {
-      transform: translateY(-8px);
-      border-color: rgba(226, 154, 11, 0.5);
-      box-shadow: 0 18px 45px rgba(120, 86, 20, 0.18), 0 0 28px rgba(226, 154, 11, 0.22);
+      transform: translateY(-6px);
+      box-shadow: 0 14px 32px var(--shadow-hover);
+      border-color: var(--gold);
     }
-
     .stat-num {
       font-family: var(--font-title);
-      font-size: 2.6rem;
-      color: var(--gold-soft);
+      font-size: 2.3rem;
+      color: var(--gold);
       line-height: 1;
     }
+    .stat-label { margin-top: 6px; font-size: .9rem; color: var(--muted); }
 
-    .stat-label {
-      margin-top: 8px;
-      font-size: .92rem;
-      font-weight: 300;
-      color: var(--ink-dim);
-      letter-spacing: .08em;
-    }
+    /* ═══════════════ אזור העץ ═══════════════ */
 
-    .scroll-hint {
-      position: absolute;
-      bottom: 30px;
-      right: 50%;
-      transform: translateX(50%);
-      color: var(--gold-soft);
-      opacity: .8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      font-size: .8rem;
-      letter-spacing: .3em;
-      padding-right: .3em;
-      text-decoration: none;
-      font-weight: 300;
-    }
-
-    .scroll-hint svg {
-      animation: bounceDown 2s ease-in-out infinite;
-    }
-
-    @keyframes bounceDown {
-
-      0%,
-      100% {
-        transform: translateY(0);
-        opacity: .9;
-      }
-
-      50% {
-        transform: translateY(10px);
-        opacity: .4;
-      }
-    }
-
-    /* ══════════════ מבנה כללי ══════════════ */
-
-    main {
+    .tree-section {
       position: relative;
-      z-index: 2;
-    }
-
-    .section {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 60px 24px;
-    }
-
-    .section-head {
+      z-index: 1;
+      max-width: 1040px;
+      margin: 64px auto 0;
+      padding: 0 20px 80px;
       text-align: center;
-      margin-bottom: 56px;
     }
 
-    .gen-tag {
-      display: inline-block;
-      font-size: .8rem;
-      font-weight: 500;
-      letter-spacing: .45em;
-      padding: 8px 22px 8px calc(22px - .45em);
-      color: var(--gold-soft);
-      border: 1px solid var(--gold-dim);
-      border-radius: 100px;
-      background: rgba(226, 154, 11, 0.12);
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-family: var(--font-title);
-      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
-      color: var(--ink);
-    }
-
-    .section-title em {
-      font-style: normal;
-      background: linear-gradient(120deg, var(--gold-soft), var(--gold));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .ornament {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 18px;
-      color: var(--gold);
-      font-size: .7rem;
-    }
-
-    .ornament::before,
-    .ornament::after {
-      content: '';
-      height: 1px;
-      width: min(150px, 25vw);
-      background: linear-gradient(90deg, transparent, rgba(226, 154, 11, .6));
-    }
-
-    .ornament::after {
-      background: linear-gradient(90deg, rgba(226, 154, 11, .6), transparent);
-    }
-
-    /* ══════════════ אנימציית כניסה ══════════════ */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(46px);
-      transition: opacity .9s cubic-bezier(.2, .7, .3, 1), transform .9s cubic-bezier(.2, .7, .3, 1);
-      transition-delay: var(--d, 0s);
-    }
-
-    .reveal.in {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ══════════════ כרטיס השורש — ההורים ══════════════ */
-
-    .root-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
+    /* ─── כרטיס השורש ─── */
     .root-card {
       position: relative;
-      width: min(560px, 100%);
-      padding: 48px 40px 42px;
-      text-align: center;
-      border-radius: 28px;
+      display: inline-block;
+      width: min(520px, 100%);
+      padding: 42px 32px 36px;
+      border-radius: 26px;
+      border: 2px solid transparent;
       background:
-        linear-gradient(160deg, rgba(255, 179, 71, 0.24), rgba(255, 255, 255, 0.6) 45%),
-        var(--bg-card);
-      border: 1px solid rgba(226, 154, 11, 0.45);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 30px 80px rgba(150, 105, 30, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      transform-style: preserve-3d;
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, var(--gold-light), var(--gold) 40%, #F6EBC3 60%, var(--gold-deep)) border-box;
+      box-shadow: 0 14px 44px var(--shadow);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform .45s cubic-bezier(.34, 1.4, .5, 1), box-shadow .45s ease;
     }
-
-    .root-card::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 30px;
-      padding: 2px;
-      background: conic-gradient(from var(--angle),
-          transparent 0deg, rgba(245, 158, 11, 0.95) 35deg, rgba(239, 71, 111, 1) 60deg,
-          rgba(123, 92, 255, 0.95) 85deg, transparent 130deg, transparent 360deg);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      mask-composite: exclude;
-      animation: orbit 5s linear infinite;
-      pointer-events: none;
+    .root-card:hover {
+      transform: translateY(-5px) scale(1.015);
+      box-shadow: 0 22px 55px var(--gold-glow);
     }
-
-    @keyframes orbit {
-      to {
-        --angle: 360deg;
-      }
+    .root-card.glow {
+      box-shadow: 0 10px 45px var(--gold-glow);
     }
 
     .crown {
-      width: 58px;
-      height: 58px;
-      margin: 0 auto 16px;
-      display: grid;
-      place-items: center;
+      width: 46px; height: 46px;
+      margin: 0 auto 12px;
+      display: grid; place-items: center;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #fff3d6, #fcd47f);
-      border: 1px solid rgba(226, 154, 11, 0.55);
-      box-shadow: 0 0 26px rgba(226, 154, 11, 0.25);
-      animation: crownPulse 3.5s ease-in-out infinite;
-    }
-
-    @keyframes crownPulse {
-
-      0%,
-      100% {
-        box-shadow: 0 0 18px rgba(226, 154, 11, 0.2);
-      }
-
-      50% {
-        box-shadow: 0 0 40px rgba(226, 154, 11, 0.5);
-      }
+      background: radial-gradient(circle at 35% 30%, #FFF6DC, var(--gold-light));
+      border: 1px solid rgba(200, 155, 42, 0.5);
+      animation: float 4s ease-in-out infinite;
     }
 
     .root-names {
       font-family: var(--font-title);
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      background: linear-gradient(120deg, #d97706, #ef476f 50%, #d97706);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: shimmer 6s linear infinite;
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      color: var(--gold-deep);
     }
+    .root-names .amp { font-size: .55em; color: var(--gold); vertical-align: middle; }
 
     .root-caption {
       margin-top: 10px;
       font-family: var(--font-serif);
-      font-weight: 300;
-      color: var(--ink-dim);
-      font-size: 1.05rem;
+      color: var(--muted);
+      font-size: 1.12rem;
     }
 
-    /* ─── גזע יורד מן ההורים ─── */
-
-    .trunk {
-      position: relative;
-      width: 2px;
-      height: 120px;
-      margin: 6px 0;
-      background: linear-gradient(180deg, rgba(226, 154, 11, .75), rgba(226, 154, 11, .12));
+    .root-hint {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 9px 26px;
+      background: linear-gradient(120deg, var(--gold), var(--gold-deep));
+      color: #FFF;
+      border-radius: 100px;
+      font-size: .95rem;
+      font-weight: 500;
+      box-shadow: 0 6px 18px var(--gold-glow);
+      animation: pulseHint 2.1s ease-in-out infinite;
+      transition: opacity .4s ease, visibility .4s;
+    }
+    .root-hint.hide { opacity: 0; visibility: hidden; animation: none; }
+    @keyframes pulseHint {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
     }
 
-    .trunk::after {
-      content: '';
+    /* ברק חולף — transform בלבד */
+    .shimmer {
       position: absolute;
-      right: 50%;
-      top: 0;
-      width: 8px;
-      height: 8px;
-      transform: translateX(50%);
-      border-radius: 50%;
-      background: var(--gold-soft);
-      box-shadow: 0 0 14px 3px rgba(226, 154, 11, 0.8);
-      animation: sap 2.6s ease-in infinite;
+      top: 0; right: 0;
+      width: 55%; height: 100%;
+      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.75) 50%, transparent 80%);
+      transform: translateX(160%) skewX(-18deg);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .root-card:hover .shimmer,
+    .branch:hover .shimmer { animation: sweep .9s ease-out; }
+    @keyframes sweep {
+      from { transform: translateX(160%) skewX(-18deg); }
+      to   { transform: translateX(-320%) skewX(-18deg); }
     }
 
-    @keyframes sap {
-      0% {
-        top: 0;
-        opacity: 0;
-      }
-
-      15% {
-        opacity: 1;
-      }
-
-      85% {
-        opacity: 1;
-      }
-
-      100% {
-        top: calc(100% - 8px);
-        opacity: 0;
-      }
-    }
-
-    .trunk-node {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      background: var(--bg-deep);
-      box-shadow: 0 0 18px rgba(226, 154, 11, 0.55);
-      margin-bottom: 40px;
-    }
-
-    /* ══════════════ רשת הענפים ══════════════ */
+    /* ═══════════════ הענפים ═══════════════ */
 
     .branches {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
-      gap: 26px;
-      align-items: start;
+      display: none; /* JS מחליף ל-grid */
+      grid-template-columns: 1fr 6px 1fr;
+      gap: 54px 0;
+      position: relative;
+      text-align: right;
+      padding-top: 36px;
     }
 
+    /* ─── הגזע המרכזי — צומח ב-scaleY (קומפוזיטור בלבד) ─── */
+    .central-trunk {
+      position: absolute;
+      top: 0; right: 50%;
+      width: 6px; height: 100%;
+      background: linear-gradient(180deg, var(--gold), var(--gold-light) 50%, var(--gold));
+      background-size: 100% 300%;
+      transform: translateX(50%) scaleY(0);
+      transform-origin: top;
+      border-radius: 3px;
+      box-shadow: 0 0 16px var(--gold-glow);
+      transition: transform 1.7s cubic-bezier(.25, .8, .25, 1);
+      animation: sapFlow 5s linear infinite;
+      z-index: 0;
+    }
+    .branches.active .central-trunk { transform: translateX(50%) scaleY(1); }
+    @keyframes sapFlow { to { background-position: 0 -300%; } }
+
+    /* ─── כרטיס ענף ─── */
     .branch {
       position: relative;
-      border-radius: 24px;
-      padding: 30px 28px 26px;
-      background: var(--bg-card);
-      border: 1px solid rgba(38, 36, 62, 0.1);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 16px 40px rgba(122, 92, 40, 0.14);
-      transition: transform .5s cubic-bezier(.2, .8, .25, 1), box-shadow .5s, border-color .5s;
-      transform-style: preserve-3d;
-      display: flex;
-      flex-direction: column;
+      z-index: 10;
+      background: var(--card);
+      border: 1px solid rgba(200, 155, 42, 0.22);
+      border-radius: 20px;
+      box-shadow: 0 8px 28px var(--shadow);
+      overflow: visible;
+
+      /* מצב כניסה — נחשף ב-JS עם השהיה מדורגת */
+      opacity: 0;
+      transform: translateY(38px) scale(.94);
+      transition:
+        opacity .5s ease,
+        transform .55s cubic-bezier(.3, 1.3, .4, 1),
+        box-shadow .35s ease,
+        border-color .35s ease;
     }
+    .branch.visible { opacity: 1; transform: translateY(0) scale(1); }
 
     .branch:hover {
-      border-color: rgba(226, 154, 11, 0.4);
-      box-shadow: 0 30px 70px rgba(122, 92, 40, 0.24), 0 0 40px rgba(245, 158, 11, 0.18);
+      box-shadow: 0 16px 42px var(--shadow-hover);
+      border-color: var(--gold);
     }
 
-    .branch::before {
-      content: '';
-      position: absolute;
-      inset: -1.5px;
-      border-radius: 25px;
-      padding: 1.5px;
-      background: conic-gradient(from var(--angle),
-          transparent, rgba(245, 158, 11, 0.9) 10%, rgba(239, 71, 111, 0.9) 18%, transparent 32%);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      mask-composite: exclude;
-      animation: orbit 4.5s linear infinite;
-      opacity: 0;
-      transition: opacity .5s;
-      pointer-events: none;
-    }
-
-    .branch:hover::before {
-      opacity: 1;
-    }
-
-    /* מספר סדר לידה */
-    .order-badge {
-      position: absolute;
-      top: -14px;
-      right: 26px;
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      font-family: var(--font-title);
-      font-size: 1rem;
-      color: #1a1405;
-      background: linear-gradient(140deg, #f7ecc0, var(--gold) 60%, #a9852a);
-      border-radius: 50%;
-      box-shadow: 0 6px 16px rgba(140, 96, 24, 0.35), 0 0 14px rgba(245, 158, 11, 0.4);
-      z-index: 2;
-    }
-
-    .couple {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 6px;
-    }
-
-    .person {
-      font-family: var(--font-title);
-      font-size: 1.55rem;
-      color: var(--ink);
-    }
-
-    .person.main-child {
-      background: linear-gradient(120deg, #e2790b, #d63d84);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .spouse {
-      font-size: 1.3rem;
-      color: var(--silver);
-      font-weight: 400;
-    }
-
-    .heart {
-      width: 20px;
-      height: 20px;
-      flex: 0 0 auto;
-      animation: heartbeat 1.6s ease-in-out infinite;
-      filter: drop-shadow(0 0 8px rgba(232, 96, 128, 0.55));
-    }
-
-    @keyframes heartbeat {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      12% {
-        transform: scale(1.25);
-      }
-
-      24% {
-        transform: scale(1);
-      }
-
-      36% {
-        transform: scale(1.18);
-      }
-
-      48% {
-        transform: scale(1);
-      }
-    }
-
-    .branch-note {
-      text-align: center;
-      font-size: .85rem;
-      font-weight: 300;
-      color: var(--ink-dim);
-      letter-spacing: .06em;
-      margin-bottom: 16px;
-    }
-
-    /* ─── קו מפריד לילדים ─── */
-    .kids-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 4px 0 16px;
-      font-size: .78rem;
-      color: var(--gold-soft);
-      letter-spacing: .18em;
-      font-weight: 300;
-    }
-
-    .kids-divider::before,
-    .kids-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(226, 154, 11, 0.35), transparent);
-    }
-
-    /* ─── שבבי ילדים (עלים) ─── */
-    .kids {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: auto;
-    }
-
-    .leaf {
-      position: relative;
-      padding: 8px 18px;
-      border-radius: 100px;
-      font-size: .98rem;
-      font-weight: 400;
-      color: var(--ink);
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(123, 92, 255, 0.35);
-      transition: transform .35s cubic-bezier(.2, .8, .25, 1), box-shadow .35s, border-color .35s, background .35s;
-      opacity: 0;
-      transform: translateY(14px) scale(.9);
-    }
-
-    .branch.open .leaf {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      transition: opacity .5s ease var(--ld, 0s), transform .5s cubic-bezier(.2, .8, .25, 1) var(--ld, 0s),
-        box-shadow .35s, border-color .35s, background .35s;
-    }
-
-    .leaf:hover {
-      transform: translateY(-5px) scale(1.06) !important;
-      border-color: rgba(226, 154, 11, 0.6);
-      background: rgba(226, 154, 11, 0.1);
-      box-shadow: 0 10px 22px rgba(140, 96, 24, 0.22), 0 0 16px rgba(245, 158, 11, 0.3);
-    }
-
-    /* ─── תאומים ─── */
-    .twins {
-      position: relative;
-      display: flex;
-      gap: 8px;
-      padding: 14px 10px 8px;
-      border-radius: 18px;
-      border: 1px dashed rgba(226, 154, 11, 0.4);
-    }
-
-    .twins-tag {
-      position: absolute;
-      top: -10px;
-      right: 50%;
-      transform: translateX(50%);
-      font-size: .68rem;
-      letter-spacing: .22em;
-      padding: 2px 12px 2px calc(12px - .22em);
-      color: #1a1405;
-      background: linear-gradient(120deg, var(--gold-soft), var(--gold));
-      border-radius: 100px;
-      white-space: nowrap;
-      font-weight: 500;
-    }
-
-    /* ─── ענף ללא ילדים / רווקים ─── */
-    .branch.solo {
-      justify-content: center;
-      text-align: center;
-    }
-
-    .solo-medal {
-      width: 64px;
-      height: 64px;
-      margin: 4px auto 14px;
-      display: grid;
-      place-items: center;
-      font-family: var(--font-title);
-      font-size: 1.7rem;
-      color: var(--gold-soft);
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 28%, #ffffff, #fdeecb);
-      border: 1px solid rgba(226, 154, 11, 0.35);
-      box-shadow: inset 0 0 18px rgba(226, 154, 11, 0.08);
-      transition: transform .5s cubic-bezier(.2, .8, .25, 1), box-shadow .5s;
-    }
-
-    .branch.solo:hover .solo-medal {
-      transform: rotate(8deg) scale(1.08);
-      box-shadow: 0 0 26px rgba(226, 154, 11, 0.3), inset 0 0 18px rgba(226, 154, 11, 0.15);
-    }
-
-    .solo-quote {
-      margin-top: 12px;
-      font-family: var(--font-serif);
-      font-weight: 300;
-      font-size: .92rem;
-      color: var(--ink-dim);
-    }
-
-    /* ══════════════ כרטיס זיכרון — יהודית ז״ל ══════════════ */
-
-    .branch.memorial {
+    .branch.expanded {
+      border-color: transparent;
       background:
-        linear-gradient(165deg, rgba(148, 163, 184, 0.18), rgba(255, 255, 255, 0.6) 55%),
-        var(--bg-card);
-      border-color: rgba(100, 116, 139, 0.35);
-      text-align: center;
-      justify-content: center;
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, var(--gold-light), var(--gold) 45%, #F6EBC3 65%, var(--gold-deep)) border-box;
+      border: 1px solid transparent;
+      box-shadow: 0 20px 55px var(--shadow-hover), 0 0 30px rgba(200, 155, 42, 0.15);
     }
 
-    .branch.memorial::before {
-      background: conic-gradient(from var(--angle),
-          transparent, rgba(100, 116, 139, 0.8) 14%, transparent 30%);
+    /* אחים מתעמעמים כשענף פתוח */
+    .branches.has-open .branch.visible:not(.expanded) {
+      opacity: .55;
+      transform: scale(.975);
     }
-
-    .branch.memorial .order-badge {
-      background: linear-gradient(140deg, #cbd5e1, #94a3b8 60%, #64748c);
-      color: #ffffff;
-    }
-
-    .memorial-name {
-      font-family: var(--font-title);
-      font-size: 1.7rem;
-      background: linear-gradient(120deg, #334155, #7d8aa0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .memorial-zl {
-      font-size: 1rem;
-      color: var(--silver);
-      letter-spacing: .3em;
-      padding-right: .3em;
-      margin-top: 6px;
-      font-weight: 300;
-    }
-
-    .memorial-verse {
-      margin-top: 14px;
-      font-family: var(--font-serif);
-      font-weight: 300;
-      font-size: .95rem;
-      color: var(--ink-dim);
-      line-height: 1.7;
-    }
-
-    /* נר נשמה */
-    .candle {
-      position: relative;
-      width: 26px;
-      height: 58px;
-      margin: 6px auto 18px;
-      background: linear-gradient(90deg, #d8d3c4, #fdfbf2 40%, #cfc9b8);
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      border-radius: 5px 5px 7px 7px;
-      box-shadow: 0 8px 18px rgba(120, 100, 60, 0.35);
-    }
-
-    .candle::before {
-      /* פתיל */
-      content: '';
-      position: absolute;
-      top: -7px;
-      right: 50%;
-      transform: translateX(50%);
-      width: 2px;
-      height: 8px;
-      background: #3a3327;
-      border-radius: 2px;
-    }
-
-    .flame {
-      position: absolute;
-      top: -28px;
-      right: 50%;
-      width: 16px;
-      height: 24px;
-      transform: translateX(50%);
-      transform-origin: 50% 100%;
-      background: radial-gradient(ellipse 50% 62% at 50% 68%, #fff8e0 0%, #ffd76a 42%, #ff9d2e 70%, rgba(255, 110, 30, 0) 100%);
-      border-radius: 50% 50% 48% 52% / 62% 62% 38% 38%;
-      animation: flicker .28s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 14px rgba(255, 180, 70, 0.85));
-    }
-
-    .flame::after {
-      /* ליבה כחלחלה */
-      content: '';
-      position: absolute;
-      bottom: 1px;
-      right: 50%;
-      transform: translateX(50%);
-      width: 6px;
-      height: 9px;
-      background: radial-gradient(ellipse at 50% 80%, rgba(120, 170, 255, .9), transparent 75%);
-      border-radius: 50%;
-    }
-
-    @keyframes flicker {
-      0% {
-        transform: translateX(50%) rotate(-3deg) scaleY(1);
-      }
-
-      40% {
-        transform: translateX(50%) rotate(2.5deg) scaleY(1.08);
-      }
-
-      100% {
-        transform: translateX(50%) rotate(-1.5deg) scaleY(.94);
-      }
-    }
-
-    .candle-glow {
-      position: absolute;
-      top: -42px;
-      right: 50%;
-      transform: translateX(50%);
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 190, 90, 0.28), transparent 70%);
-      animation: glowPulse 2.4s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes glowPulse {
-
-      0%,
-      100% {
-        opacity: .7;
-        transform: translateX(50%) scale(1);
-      }
-
-      50% {
-        opacity: 1;
-        transform: translateX(50%) scale(1.25);
-      }
-    }
-
-    /* ══════════════ ציטוט סיום ══════════════ */
-
-    .quote-band {
-      text-align: center;
-      padding: 90px 24px 70px;
-    }
-
-    .quote-mark {
-      font-family: var(--font-title);
-      font-size: 4rem;
-      line-height: .5;
-      color: var(--gold-dim);
-    }
-
-    .quote-text {
-      max-width: 720px;
-      margin: 18px auto 0;
-      font-family: var(--font-serif);
-      font-weight: 300;
-      font-size: clamp(1.3rem, 3.2vw, 1.9rem);
-      line-height: 1.8;
-      color: var(--ink);
-    }
-
-    .quote-text em {
-      font-style: normal;
-      background: linear-gradient(120deg, var(--gold-soft), var(--gold));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    /* ══════════════ פוטר ══════════════ */
-
-    footer {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 40px 20px 55px;
-      border-top: 1px solid rgba(226, 154, 11, 0.3);
-      background: linear-gradient(180deg, transparent, rgba(226, 154, 11, 0.1));
-    }
-
-    footer .f-title {
-      font-family: var(--font-title);
-      font-size: 1.15rem;
-      color: var(--gold-soft);
-      letter-spacing: .12em;
-    }
-
-    footer .f-sub {
-      margin-top: 10px;
-      font-size: .85rem;
-      font-weight: 300;
-      color: var(--ink-dim);
-    }
-
-    /* ══════════════ עץ אינטראקטיבי ══════════════ */
-
-    button.root-card,
-    .branch-head {
-      appearance: none;
-      -webkit-appearance: none;
-      font: inherit;
-      color: inherit;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    button.root-card {
-      display: block;
-    }
-
-    .branch-head {
-      background: none;
-      border: none;
-      padding: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .open-hint {
-      margin-top: 22px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 28px;
-      border-radius: 100px;
-      font-family: var(--font-body);
-      font-size: .95rem;
-      font-weight: 500;
-      color: #fff;
-      background: linear-gradient(120deg, #f59e0b, #ef476f 55%, #7b5cff);
-      background-size: 220% auto;
-      box-shadow: 0 10px 26px rgba(239, 71, 111, 0.35);
-      animation: shimmer 3.5s linear infinite, hintPulse 2.2s ease-in-out infinite;
-    }
-
-    .hint-open {
-      display: none;
-    }
-
-    .root-card.open .hint-closed {
-      display: none;
-    }
-
-    .root-card.open .hint-open {
-      display: inline;
-    }
-
-    .root-card.open .open-hint {
-      animation: shimmer 3.5s linear infinite;
-      box-shadow: 0 6px 18px rgba(123, 92, 255, 0.3);
-    }
-
-    @keyframes hintPulse {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.07);
-      }
-    }
-
-    /* גזע וענפים — נחשפים בלחיצה על ההורים */
-    .trunk,
-    .trunk-node {
-      display: none;
-    }
-
-    .tree-is-open .trunk {
-      display: block;
-      transform-origin: top;
-      animation: growDown .7s ease both;
-    }
-
-    .tree-is-open .trunk-node {
-      display: block;
-      animation: nodePop .5s .55s cubic-bezier(.34, 1.56, .64, 1) both;
-    }
-
-    @keyframes growDown {
-      from {
-        transform: scaleY(0);
-      }
-    }
-
-    @keyframes nodePop {
-      from {
-        transform: scale(0);
-        opacity: 0;
-      }
-
-      70% {
-        transform: scale(1.6);
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    .tree-lower {
-      display: none;
-    }
-
-    .tree-is-open .tree-lower {
-      display: block;
-    }
-
-    .tree-lower .section-head {
-      animation: fadeUp .8s .2s cubic-bezier(.2, .7, .3, 1) backwards;
-    }
-
-    .tree-lower .branch {
-      animation-name: branchIn;
-      animation-duration: .9s;
-      animation-delay: calc(.4s + var(--d, 0s));
-      animation-timing-function: cubic-bezier(.2, .7, .3, 1);
-      animation-fill-mode: backwards;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-    }
-
-    @keyframes branchIn {
-      from {
-        opacity: 0;
-        transform: translateY(60px) scale(.92);
-      }
-    }
-
-    /* ראש ענף — תמיד גלוי */
-    .head-teaser {
-      font-size: .85rem;
-      font-weight: 300;
-      color: var(--ink-dim);
-      letter-spacing: .05em;
-    }
-
-    .expand-icon {
-      position: relative;
-      width: 34px;
-      height: 34px;
-      margin-top: 10px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(226, 154, 11, 0.6);
-      background: rgba(255, 255, 255, 0.7);
-      transition: transform .45s cubic-bezier(.34, 1.56, .64, 1), background .35s, border-color .35s, box-shadow .35s;
-    }
-
-    .expand-icon::before,
-    .expand-icon::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 50%;
-      transform: translate(50%, -50%);
-      background: var(--gold-soft);
-      border-radius: 2px;
-      transition: background .35s;
-    }
-
-    .expand-icon::before {
-      width: 14px;
-      height: 2px;
-    }
-
-    .expand-icon::after {
-      width: 2px;
-      height: 14px;
-    }
-
-    .branch-head:hover .expand-icon {
-      transform: scale(1.15);
-      box-shadow: 0 0 18px rgba(245, 158, 11, 0.45);
-    }
-
-    .branch.open .expand-icon {
-      transform: rotate(135deg);
-      background: linear-gradient(140deg, #ef476f, #7b5cff);
-      border-color: transparent;
-    }
-
-    .branch.open .expand-icon::before,
-    .branch.open .expand-icon::after {
-      background: #fff;
-    }
-
-    .branch.memorial .expand-icon {
-      border-color: rgba(100, 116, 139, 0.55);
-    }
-
-    .branch.memorial .expand-icon::before,
-    .branch.memorial .expand-icon::after {
-      background: #64748c;
-    }
-
-    .branch.memorial.open .expand-icon {
-      background: linear-gradient(140deg, #64748c, #334155);
-      border-color: transparent;
-    }
-
-    .branch.memorial.open .expand-icon::before,
-    .branch.memorial.open .expand-icon::after {
-      background: #fff;
-    }
-
-    /* גוף הענף — נפתח ונסגר בחלקות */
-    .branch-body {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows .65s cubic-bezier(.22, .9, .3, 1);
-      cursor: auto;
-    }
-
-    .branch-body-inner {
-      overflow: hidden;
-      min-height: 0;
-    }
-
-    .branch.open .branch-body {
-      grid-template-rows: 1fr;
-    }
-
-    .body-pad {
-      padding-top: 16px;
-    }
-
-    .branch.memorial .body-pad {
-      padding-top: 48px;
-    }
-
-    /* ענף פתוח מודגש — אחיו מתעמעמים */
-    .branch {
-      cursor: pointer;
-      transition: transform .5s cubic-bezier(.2, .8, .25, 1), box-shadow .5s, border-color .5s, opacity .5s, filter .5s;
-    }
-
-    .branch.open {
-      border-color: transparent;
-      box-shadow: 0 34px 80px rgba(122, 92, 40, 0.28), 0 0 50px rgba(239, 71, 111, 0.18);
-    }
-
-    .branch.open::before {
-      opacity: 1;
-    }
-
-    .branches.has-open .branch:not(.open) {
-      opacity: .45;
-      filter: saturate(.5);
-      transform: scale(.97);
-    }
-
-    .branches.has-open .branch:not(.open):hover {
-      opacity: .85;
-      filter: none;
+    .branches.has-open .branch.visible:not(.expanded):hover {
+      opacity: .9;
       transform: scale(1);
     }
 
-    /* ══════════════ התאמות ══════════════ */
+    /* הברק בתוך הכרטיס לא זולג מהפינות */
+    .branch .shimmer { border-radius: 20px; overflow: hidden; }
 
-    @media (max-width: 560px) {
-      .branch {
-        padding: 26px 18px 22px;
-      }
+    /* ─── פריסה לסירוגין + זיגזג ─── */
+    .branch:nth-of-type(odd)  { grid-column: 1; margin-left: 52px; }
+    .branch:nth-of-type(even) { grid-column: 3; margin-right: 52px; margin-top: 62px; }
 
-      .stats {
-        gap: 10px;
-      }
+    /* ─── קווי חיבור לגזע — scaleX בלבד ─── */
+    .branch-connector {
+      position: absolute;
+      top: 46px;
+      width: 44px; height: 4px;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold));
+      border-radius: 2px;
+      z-index: 1;
+      transform: scaleX(0);
+      transition: transform .55s cubic-bezier(.34, 1.4, .5, 1) .25s;
+    }
+    .branch.visible .branch-connector { transform: scaleX(1); }
 
-      .stat {
-        min-width: 130px;
-        padding: 16px 20px;
-      }
+    .branch:nth-of-type(odd) .branch-connector  { right: 100%; transform-origin: left center; }
+    .branch:nth-of-type(even) .branch-connector { left: 100%; transform-origin: right center; }
+
+    .branch-connector::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      width: 16px; height: 16px;
+      background: #FFF;
+      border: 4px solid var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+    .branch:nth-of-type(odd) .branch-connector::before  { left: -9px; }
+    .branch:nth-of-type(even) .branch-connector::before { right: -9px; }
+
+    /* ─── מדליון סדר לידה ─── */
+    .order-badge {
+      position: absolute;
+      top: -16px; right: 20px;
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, var(--gold-deep));
+      color: #FFF;
+      border: 3px solid #FFF;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 1.05rem;
+      font-family: var(--font-title);
+      box-shadow: 0 5px 14px rgba(139, 115, 85, 0.3);
+      z-index: 11;
     }
 
-    @media (prefers-reduced-motion: reduce) {
+    /* ─── ראש הענף (לחיץ) ─── */
+    .branch-header {
+      padding: 30px 24px 26px;
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+      border-radius: 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .branch-header:focus-visible,
+    .root-card:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
 
-      *,
-      *::before,
-      *::after {
+    .couple {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .branch.solo .couple,
+    .branch .couple.center { justify-content: center; }
+
+    .person { font-family: var(--font-title); font-size: 1.6rem; color: var(--ink); }
+    .person.main-child { color: var(--gold-deep); }
+    .spouse { color: var(--muted); font-size: 1.3rem; }
+
+    .heart {
+      width: 18px; height: 18px;
+      fill: var(--rose);
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      12% { transform: scale(1.22); }
+      24% { transform: scale(1); }
+      36% { transform: scale(1.15); }
+      48% { transform: scale(1); }
+    }
+
+    .head-teaser { font-size: .95rem; color: var(--muted); }
+
+    /* ─── חץ פתיחה ─── */
+    .expand-indicator {
+      position: absolute;
+      bottom: -16px; left: 50%;
+      width: 32px; height: 32px;
+      background: var(--card);
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      box-shadow: 0 4px 12px var(--shadow);
+      z-index: 12;
+      transform: translateX(-50%);
+      transition: transform .45s cubic-bezier(.34, 1.5, .5, 1), background .3s ease, color .3s ease;
+    }
+    .branch-header:hover .expand-indicator { transform: translateX(-50%) scale(1.15); }
+    .branch.expanded .expand-indicator {
+      transform: translateX(-50%) rotate(180deg);
+      background: var(--gold);
+      color: #FFF;
+    }
+
+    /* ─── גוף הענף — נפתח בחלקות ─── */
+    .branch-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .55s cubic-bezier(.4, 0, .2, 1);
+    }
+    .branch.expanded .branch-body { grid-template-rows: 1fr; }
+    .branch-body-inner { overflow: hidden; min-height: 0; padding: 0 24px; }
+    .branch-body-inner > :last-child { margin-bottom: 28px; }
+
+    /* ─── פריטים שקופצים פנימה בפתיחה ─── */
+    .pop {
+      opacity: 0;
+      transform: translateY(12px) scale(.88);
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .branch.expanded .pop {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity .4s ease var(--pd, 0s),
+        transform .5s cubic-bezier(.34, 1.5, .5, 1) var(--pd, 0s);
+    }
+
+    /* ─── ילדים (עלים ירוקים — זה עץ!) ─── */
+    .kids-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 8px 0 18px;
+      font-size: .88rem;
+      color: var(--gold-deep);
+      font-weight: 500;
+      letter-spacing: .08em;
+    }
+    .kids-divider::before, .kids-divider::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: rgba(200, 155, 42, 0.35);
+    }
+
+    .kids { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+    .leaf {
+      display: inline-block;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 1rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(110, 155, 98, 0.12);
+      transition: transform .3s cubic-bezier(.34, 1.5, .5, 1), background .3s ease, color .3s ease, box-shadow .3s ease;
+    }
+    .leaf:hover {
+      transform: translateY(-4px) scale(1.05);
+      background: var(--green);
+      color: #FFF;
+      box-shadow: 0 8px 18px rgba(79, 122, 68, 0.35);
+    }
+
+    .twins {
+      position: relative;
+      display: flex; gap: 7px;
+      padding: 16px 10px 10px;
+      border-radius: 16px;
+      border: 1.5px dashed var(--gold);
+      background: #FCF8EC;
+    }
+    .twins-tag {
+      position: absolute;
+      top: -11px; right: 50%;
+      transform: translateX(50%);
+      font-size: .72rem;
+      background: linear-gradient(120deg, var(--gold), var(--gold-deep));
+      color: #FFF;
+      padding: 3px 12px;
+      border-radius: 100px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px var(--gold-glow);
+    }
+
+    /* ─── כרטיס זיכרון — יהודית ז״ל ─── */
+    .branch.memorial { border-color: rgba(108, 117, 125, 0.3); }
+    .branch.memorial:hover { border-color: var(--slate); }
+    .branch.memorial.expanded {
+      background:
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, #DEE2E6, #ADB5BD 50%, #868E96) border-box;
+      box-shadow: 0 20px 55px rgba(108, 117, 125, 0.22);
+    }
+    .branch.memorial .order-badge { background: linear-gradient(135deg, #CED4DA, #868E96); }
+    .branch.memorial .branch-connector { background: linear-gradient(90deg, #DEE2E6, #ADB5BD); }
+    .branch.memorial .branch-connector::before { border-color: #ADB5BD; box-shadow: 0 0 10px rgba(173, 181, 189, 0.5); }
+    .branch.memorial .expand-indicator { border-color: #ADB5BD; color: var(--slate); }
+    .branch.memorial.expanded .expand-indicator { background: var(--slate); color: #FFF; }
+
+    .memorial-name { font-family: var(--font-title); font-size: 1.8rem; color: #495057; }
+    .memorial-zl { font-size: .98rem; color: #868E96; margin-top: 4px; letter-spacing: .2em; padding-right: .2em; }
+    .memorial-verse {
+      font-family: var(--font-serif);
+      font-size: .98rem;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    /* נר נשמה — CSS, להבה ב-transform בלבד */
+    .candle-wrap {
+      display: flex; justify-content: center;
+      padding-top: 30px;
+      margin-bottom: 16px;
+    }
+    .candle {
+      position: relative;
+      width: 22px; height: 52px;
+      background: linear-gradient(90deg, #D9D4C6, #FDFBF2 40%, #CFC9B8);
+      border: 1px solid #C4CBD3;
+      border-radius: 4px 4px 6px 6px;
+    }
+    .candle::before { /* פתיל */
+      content: '';
+      position: absolute;
+      top: -6px; right: 50%;
+      transform: translateX(50%);
+      width: 2px; height: 7px;
+      background: #4A4437;
+      border-radius: 2px;
+    }
+    .flame {
+      position: absolute;
+      top: -25px; right: 50%;
+      width: 14px; height: 21px;
+      background: radial-gradient(ellipse 50% 62% at 50% 68%, #FFF8E0, #FFD76A 45%, #FF9D2E 72%, transparent);
+      border-radius: 50% 50% 48% 52% / 62% 62% 38% 38%;
+      transform: translateX(50%);
+      transform-origin: 50% 100%;
+      animation: flicker .3s ease-in-out infinite alternate;
+      box-shadow: 0 -4px 20px 5px rgba(255, 170, 60, 0.4);
+    }
+    @keyframes flicker {
+      from { transform: translateX(50%) rotate(-2.5deg) scaleY(1); }
+      to   { transform: translateX(50%) rotate(2deg) scaleY(.92); }
+    }
+
+    /* ─── רווקים ─── */
+    .solo-medal {
+      width: 56px; height: 56px;
+      margin: 6px auto 12px;
+      display: grid; place-items: center;
+      font-family: var(--font-title);
+      font-size: 1.7rem;
+      color: #FFF;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, var(--gold-deep));
+      border-radius: 50%;
+      box-shadow: 0 6px 16px var(--gold-glow);
+    }
+    .solo-quote {
+      font-family: var(--font-serif);
+      font-size: .95rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ═══════════════ ציטוט ═══════════════ */
+
+    .quote-band {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 70px 20px;
+      margin-top: 30px;
+    }
+    .quote-text {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 4vw, 2.1rem);
+      line-height: 1.65;
+      max-width: 720px;
+      margin: 0 auto;
+      background: linear-gradient(120deg, #8B7355, var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .3, 1);
+    }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════ פוטר ═══════════════ */
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: .9rem;
+      border-top: 1px solid rgba(200, 155, 42, 0.25);
+      background: linear-gradient(180deg, transparent, rgba(239, 217, 143, 0.15));
+    }
+    .f-title { color: var(--gold-deep); font-family: var(--font-title); font-size: 1.1rem; letter-spacing: .1em; }
+    .f-sub { margin-top: 8px; }
+
+    /* ═══════════════ מובייל ═══════════════ */
+
+    @media (max-width: 768px) {
+      .branches { grid-template-columns: 1fr; gap: 44px 0; }
+      .central-trunk { right: 11px; transform: translateX(0) scaleY(0); }
+      .branches.active .central-trunk { transform: translateX(0) scaleY(1); }
+
+      .branch:nth-of-type(odd),
+      .branch:nth-of-type(even) {
+        grid-column: 1;
+        margin: 0 44px 0 0;
+      }
+      .branch:nth-of-type(odd) .branch-connector,
+      .branch:nth-of-type(even) .branch-connector {
+        right: 100%; left: auto;
+        width: 32px;
+        transform-origin: left center;
+      }
+      .branch:nth-of-type(odd) .branch-connector::before,
+      .branch:nth-of-type(even) .branch-connector::before {
+        left: -9px; right: auto;
+      }
+      .blob { display: none; }
+    }
+
+    /* ═══════════════ צמצום אנימציות ═══════════════ */
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: .2s !important;
+        transition-duration: .15s !important;
       }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
-
-      .branch .leaf {
-        opacity: 1;
-        transform: none;
-      }
+      .dots, .blob { display: none; }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- ═══ רקעים ═══ -->
-  <div class="sky"></div>
-  <div class="aurora a1"></div>
-  <div class="aurora a2"></div>
-  <div class="aurora a3"></div>
-  <canvas id="dust"></canvas>
+  <div class="progress" id="progressBar"></div>
 
-  <!-- ═══ מסך פתיחה ═══ -->
-  <div class="intro" id="intro">
-    <div class="intro-mark">משפחת נתניה</div>
-    <div class="intro-line"></div>
+  <!-- רקע חי וקליל -->
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="dots" aria-hidden="true">
+    <span style="--x:6%;  --s:7px;  --t:17s; --dl:0s;   --c:#E7C55A"></span>
+    <span style="--x:16%; --s:5px;  --t:23s; --dl:4s;   --c:#8FB478"></span>
+    <span style="--x:27%; --s:9px;  --t:19s; --dl:8s;   --c:#E7C55A"></span>
+    <span style="--x:38%; --s:5px;  --t:26s; --dl:2s;   --c:#E0828F"></span>
+    <span style="--x:49%; --s:7px;  --t:21s; --dl:11s;  --c:#E7C55A"></span>
+    <span style="--x:58%; --s:6px;  --t:24s; --dl:6s;   --c:#8FB478"></span>
+    <span style="--x:69%; --s:8px;  --t:18s; --dl:13s;  --c:#E7C55A"></span>
+    <span style="--x:78%; --s:5px;  --t:27s; --dl:3s;   --c:#E0828F"></span>
+    <span style="--x:88%; --s:7px;  --t:20s; --dl:9s;   --c:#8FB478"></span>
+    <span style="--x:95%; --s:6px;  --t:25s; --dl:15s;  --c:#E7C55A"></span>
   </div>
-
-  <div class="progress" id="progress"></div>
 
   <!-- ═══ HERO ═══ -->
   <header class="hero">
-    <svg class="hero-crest" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-      <circle cx="50" cy="50" r="47" stroke="#c98a06" stroke-width="1.2" opacity=".55" />
-      <circle cx="50" cy="50" r="41" stroke="#c98a06" stroke-width=".6" opacity=".3" />
-      <path d="M50 82 V46" stroke="#c98a06" stroke-width="2.4" stroke-linecap="round" />
-      <path d="M50 58 C38 52 32 42 31 30 M50 52 C60 47 66 39 67 27 M50 64 C42 61 36 56 33 48 M50 60 C58 57 63 52 66 45"
-        stroke="#c98a06" stroke-width="1.8" stroke-linecap="round" fill="none" />
-      <circle cx="31" cy="27" r="3.2" fill="#f59e0b" />
-      <circle cx="67" cy="24" r="3.2" fill="#f59e0b" />
-      <circle cx="33" cy="45" r="2.5" fill="#f59e0b" />
-      <circle cx="66" cy="42" r="2.5" fill="#f59e0b" />
-      <circle cx="50" cy="20" r="3.8" fill="#f59e0b" />
-      <path d="M50 46 C46 38 46 30 50 24 C54 30 54 38 50 46Z" fill="#c98a06" opacity=".85" />
-      <path d="M34 82 H66" stroke="#c98a06" stroke-width="1.4" stroke-linecap="round" opacity=".7" />
+    <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22v-8"></path>
+      <path d="M12 14c-2.5-2.5-2.5-6.5 0-9"></path>
+      <path d="M12 14c2.5-2.5 2.5-6.5 0-9"></path>
+      <path d="M12 10.5c-1.5-1.5-1.5-3.5 0-5"></path>
+      <path d="M12 10.5c1.5-1.5 1.5-3.5 0-5"></path>
+      <path d="M12 7c-.5-.5-.5-1.5 0-2"></path>
+      <path d="M12 7c.5-.5.5-1.5 0-2"></path>
     </svg>
-
     <div class="hero-eyebrow">שורשים · צמיחה · המשכיות</div>
     <h1 class="hero-title">עץ המשפחה</h1>
     <p class="hero-sub">שלושה דורות של בית אחד — <strong>משפחת נתניה</strong></p>
 
-    <div class="hero-divider">✦</div>
-
     <div class="stats">
-      <div class="stat">
-        <div class="stat-num" data-count="3">0</div>
-        <div class="stat-label">דורות</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" data-count="10">0</div>
-        <div class="stat-label">ילדים</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" data-count="16">0</div>
-        <div class="stat-label">נכדים ונכדות</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" data-count="34">0</div>
-        <div class="stat-label">בני משפחה</div>
-      </div>
+      <div class="stat"><div class="stat-num" data-count="3">0</div><div class="stat-label">דורות</div></div>
+      <div class="stat"><div class="stat-num" data-count="10">0</div><div class="stat-label">ילדים</div></div>
+      <div class="stat"><div class="stat-num" data-count="16">0</div><div class="stat-label">נכדים ונכדות</div></div>
+      <div class="stat"><div class="stat-num" data-count="34">0</div><div class="stat-label">בני משפחה</div></div>
     </div>
-
-    <a class="scroll-hint" href="#tree">
-      <span>אל העץ</span>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round">
-        <path d="M6 9l6 6 6-6" />
-      </svg>
-    </a>
   </header>
 
   <main>
-    <!-- ═══ דור ראשון ═══ -->
-    <section class="section" id="tree">
-      <div class="section-head reveal">
-        <span class="gen-tag">הדור הראשון</span>
-        <h2 class="section-title">הלב של <em>המשפחה</em></h2>
-        <div class="ornament">◆</div>
-      </div>
+    <section class="tree-section">
 
+      <!-- ═══ כרטיס השורש ═══ -->
       <div class="root-wrap">
-        <button class="root-card reveal tilt" id="rootCard" aria-expanded="false">
+        <div class="root-card" id="rootCard" role="button" tabindex="0" aria-expanded="false">
+          <div class="shimmer"></div>
           <div class="crown">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#a16207" stroke-width="1.6"
-              stroke-linejoin="round">
-              <path d="M3 17h18M4 17l-1-9 5.5 4L12 5l3.5 7L21 8l-1 9" fill="rgba(226,154,11,.25)" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(200,155,42,.25)" stroke="#A87F14" stroke-width="1.6" stroke-linejoin="round">
+              <path d="M3 17h18M4 17l-1-9 5.5 4L12 5l3.5 7L21 8l-1 9" />
             </svg>
           </div>
-          <div class="root-names">משה <span style="font-size:.55em; vertical-align: middle;">&amp;</span> ציפי</div>
-          <p class="root-caption">האבן שממנה נבנה הכל · הורים לעשרה, סבא וסבתא לשישה־עשר</p>
-          <span class="open-hint"><span class="hint-closed">✨ לחצו לפתיחת העץ ✨</span><span
-              class="hint-open">לחצו לסגירת העץ</span></span>
-        </button>
-        <div class="trunk"></div>
-        <div class="trunk-node"></div>
+          <div class="root-names">משה <span class="amp">&amp;</span> ציפי</div>
+          <p class="root-caption">האבן שממנה נבנה הכל · הורים לעשרה, סבא וסבתא ל-16</p>
+          <div class="root-hint" id="rootHint">לחץ לבניית העץ ✨</div>
+        </div>
       </div>
 
-      <!-- ═══ דור שני ושלישי — נחשף בלחיצה על ההורים ═══ -->
-      <div class="tree-lower">
-        <div class="section-head">
-          <span class="gen-tag">הדור השני והשלישי</span>
-          <h2 class="section-title">עשרה ענפים, <em>עולם שלם</em></h2>
-          <div class="ornament">◆</div>
-        </div>
-
-      <div class="branches">
+      <!-- ═══ הענפים ═══ -->
+      <div class="branches" id="branchesContainer">
+        <div class="central-trunk"></div>
 
         <!-- 1 · הודיה -->
-        <article class="branch tilt" style="--d:.0s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">א</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">הודיה</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">שלמה</span>
             </div>
-            <span class="head-teaser">הבת הבכורה · אמא לחמישה</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">הילדים</div>
-                <div class="kids">
-                  <span class="twins">
-                    <span class="twins-tag">תאומים</span>
-                    <span class="leaf" style="--ld:.05s">אסתי</span>
-                    <span class="leaf" style="--ld:.1s">יענקי</span>
-                  </span>
-                  <span class="leaf" style="--ld:.15s">דודי</span>
-                  <span class="leaf" style="--ld:.2s">יוסף אלעזר</span>
-                  <span class="leaf" style="--ld:.25s">צופית</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">הבת הבכורה · אמא לחמישה</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+            <div class="kids">
+              <span class="twins pop" style="--pd:.18s"><span class="twins-tag">תאומים</span><span class="leaf">אסתי</span><span class="leaf">יענקי</span></span>
+              <span class="leaf pop" style="--pd:.26s">דודי</span>
+              <span class="leaf pop" style="--pd:.34s">יוסף אלעזר</span>
+              <span class="leaf pop" style="--pd:.42s">צופית</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 2 · קובי -->
-        <article class="branch tilt" style="--d:.06s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ב</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">קובי</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">נטע</span>
             </div>
-            <span class="head-teaser">הבן הבכור · אבא לשניים</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">הילדים</div>
-                <div class="kids">
-                  <span class="leaf" style="--ld:.05s">אילון</span>
-                  <span class="leaf" style="--ld:.1s">כרמל</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">הבן הבכור · אבא לשניים</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+            <div class="kids">
+              <span class="leaf pop" style="--pd:.18s">אילון</span>
+              <span class="leaf pop" style="--pd:.26s">כרמל</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 3 · רזיאל -->
-        <article class="branch tilt" style="--d:.12s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ג</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">רזיאל</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">שושי</span>
             </div>
-            <span class="head-teaser">אבא לשלושה</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">הילדים</div>
-                <div class="kids">
-                  <span class="leaf" style="--ld:.05s">מוישי</span>
-                  <span class="leaf" style="--ld:.1s">שרי</span>
-                  <span class="leaf" style="--ld:.15s">מאירי</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">אבא לשלושה</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+            <div class="kids">
+              <span class="leaf pop" style="--pd:.18s">מוישי</span>
+              <span class="leaf pop" style="--pd:.26s">שרי</span>
+              <span class="leaf pop" style="--pd:.34s">מאירי</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 4 · פרת -->
-        <article class="branch tilt" style="--d:.18s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ד</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">פרת</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">שלומי</span>
             </div>
-            <span class="head-teaser">אמא לארבעה</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">הילדים</div>
-                <div class="kids">
-                  <span class="leaf" style="--ld:.05s">אודי</span>
-                  <span class="leaf" style="--ld:.1s">יוני</span>
-                  <span class="leaf" style="--ld:.15s">תמר</span>
-                  <span class="leaf" style="--ld:.2s">הילי</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">אמא לארבעה</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+            <div class="kids">
+              <span class="leaf pop" style="--pd:.18s">אודי</span>
+              <span class="leaf pop" style="--pd:.26s">יוני</span>
+              <span class="leaf pop" style="--pd:.34s">תמר</span>
+              <span class="leaf pop" style="--pd:.42s">הילי</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 5 · יהודית ז"ל -->
-        <article class="branch memorial" style="--d:.24s">
+        <article class="branch memorial">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ה</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="memorial-name">יהודית</div>
             <div class="memorial-zl">זכרונה לברכה</div>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="candle">
-                  <div class="candle-glow"></div>
-                  <div class="flame"></div>
-                </div>
-                <p class="memorial-verse">״נֵר ה׳ נִשְׁמַת אָדָם״<br>אור שממשיך לדלוק בלב כולנו, לעד.</p>
-              </div>
-            </div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="candle-wrap pop" style="--pd:.15s">
+              <div class="candle"><span class="flame"></span></div>
+            </div>
+            <p class="memorial-verse pop" style="--pd:.3s">״נֵר ה׳ נִשְׁמַת אָדָם״<br>אור שממשיך לדלוק בלב כולנו, לעד.</p>
+          </div></div>
         </article>
 
         <!-- 6 · שמחה -->
-        <article class="branch tilt" style="--d:.3s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ו</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">שמחה</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">סם</span>
             </div>
-            <span class="head-teaser">זוגיות שכולה שמחה</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">יחד</div>
-                <div class="kids">
-                  <span class="leaf" style="--ld:.05s">✦ אהבה ✦</span>
-                  <span class="leaf" style="--ld:.1s">✦ שמחה ✦</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">זוגיות שכולה שמחה</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">יחד</div>
+            <div class="kids">
+              <span class="leaf pop" style="--pd:.18s">✦ אהבה ✦</span>
+              <span class="leaf pop" style="--pd:.26s">✦ שמחה ✦</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 7 · יוסף -->
-        <article class="branch solo tilt" style="--d:.36s">
+        <article class="branch solo">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ז</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple"><span class="person main-child">יוסף</span></div>
-            <span class="head-teaser">הבן השביעי</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="solo-medal">י</div>
-                <p class="solo-quote">ענף צעיר וחזק בעץ המשפחה</p>
-              </div>
-            </div>
+            <div class="head-teaser" style="text-align:center">הבן השביעי</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="solo-medal pop" style="--pd:.12s">י</div>
+            <p class="solo-quote pop" style="--pd:.24s">ענף צעיר וחזק בעץ המשפחה</p>
+          </div></div>
         </article>
 
         <!-- 8 · אלעזר -->
-        <article class="branch tilt" style="--d:.42s">
+        <article class="branch">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ח</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple">
               <span class="person main-child">אלעזר</span>
-              <svg class="heart" viewBox="0 0 24 24" fill="#e86080">
-                <path
-                  d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" />
-              </svg>
+              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
               <span class="person spouse">טליה</span>
             </div>
-            <span class="head-teaser">אבא לשניים</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="kids-divider">הבנים</div>
-                <div class="kids">
-                  <span class="leaf" style="--ld:.05s">יונתן</span>
-                  <span class="leaf" style="--ld:.1s">בנימין</span>
-                </div>
-              </div>
-            </div>
+            <div class="head-teaser">אבא לשניים</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="kids-divider pop" style="--pd:.1s">הבנים</div>
+            <div class="kids">
+              <span class="leaf pop" style="--pd:.18s">יונתן</span>
+              <span class="leaf pop" style="--pd:.26s">בנימין</span>
+            </div>
+          </div></div>
         </article>
 
         <!-- 9 · עמנואל -->
-        <article class="branch solo tilt" style="--d:.48s">
+        <article class="branch solo">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">ט</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple"><span class="person main-child">עמנואל</span></div>
-            <span class="head-teaser">הבן התשיעי</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="solo-medal">ע</div>
-                <p class="solo-quote">שורשים עמוקים, שמיים פתוחים</p>
-              </div>
-            </div>
+            <div class="head-teaser" style="text-align:center">הבן התשיעי</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="solo-medal pop" style="--pd:.12s">ע</div>
+            <p class="solo-quote pop" style="--pd:.24s">שורשים עמוקים, שמיים פתוחים</p>
+          </div></div>
         </article>
 
         <!-- 10 · צירי -->
-        <article class="branch solo tilt" style="--d:.54s">
+        <article class="branch solo">
+          <div class="shimmer"></div>
+          <div class="branch-connector"></div>
           <div class="order-badge">י</div>
-          <button class="branch-head" aria-expanded="false">
+          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
             <div class="couple"><span class="person main-child">צירי</span></div>
-            <span class="head-teaser">בת הזקונים</span>
-            <span class="expand-icon" aria-hidden="true"></span>
-          </button>
-          <div class="branch-body">
-            <div class="branch-body-inner">
-              <div class="body-pad">
-                <div class="solo-medal">צ</div>
-                <p class="solo-quote">הצעירה שסוגרת את המעגל באהבה</p>
-              </div>
-            </div>
+            <div class="head-teaser" style="text-align:center">בת הזקונים</div>
+            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
           </div>
+          <div class="branch-body"><div class="branch-body-inner">
+            <div class="solo-medal pop" style="--pd:.12s">צ</div>
+            <p class="solo-quote pop" style="--pd:.24s">הצעירה שסוגרת את המעגל באהבה</p>
+          </div></div>
         </article>
 
-        </div>
       </div>
     </section>
 
     <!-- ═══ ציטוט ═══ -->
     <section class="quote-band reveal">
-      <div class="quote-mark">”</div>
       <p class="quote-text">
-        משפחה היא לא דבר חשוב — <em>היא כל הדבר</em>.<br>
+        משפחה היא לא דבר חשוב — היא כל הדבר.<br>
         מִשֹּׁרֶשׁ אחד צמחו עשרה ענפים, ומהם פורחים עוד ועוד עלים חדשים.
       </p>
     </section>
   </main>
 
-  <!-- ═══ פוטר ═══ -->
   <footer>
     <div class="f-title">✦ משפחת נתניה ✦</div>
     <div class="f-sub">נבנה באהבה · תשפ״ו — 2026</div>
   </footer>
 
   <script>
-    /* ══════════════ מסך פתיחה ══════════════ */
-    window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('intro').classList.add('gone'), 1900);
-    });
-    /* גיבוי אם load מתעכב (למשל פונטים איטיים) */
-    setTimeout(() => document.getElementById('intro').classList.add('gone'), 3500);
-
-    /* ══════════════ פס התקדמות ══════════════ */
-    const progress = document.getElementById('progress');
-    addEventListener('scroll', () => {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      progress.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
-    }, { passive: true });
-
-    /* ══════════════ אבק זהב + כוכבים (Canvas) ══════════════ */
-    const canvas = document.getElementById('dust');
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [], stars = [], bursts = [];
-
-    function sizeCanvas() {
-      W = canvas.width = innerWidth;
-      H = canvas.height = innerHeight;
-    }
-    sizeCanvas();
-    addEventListener('resize', () => { sizeCanvas(); seed(); });
-
-    const palette = [
-      [245, 158, 11],   // ענבר
-      [239, 71, 111],   // קורל
-      [123, 92, 255],   // סגול
-      [0, 168, 150],    // טורקיז
-      [41, 138, 255]    // תכלת
-    ];
-    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-
-    function seed() {
-      const n = Math.min(70, Math.floor(W * H / 22000));
-      particles = Array.from({ length: n }, () => ({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 2.2 + 0.6,
-        vy: -(Math.random() * 0.35 + 0.08),
-        vx: (Math.random() - 0.5) * 0.22,
-        a: Math.random() * Math.PI * 2,
-        tw: Math.random() * 0.02 + 0.006,
-        c: pick(palette)
-      }));
-      stars = Array.from({ length: Math.floor(n * 1.6) }, () => ({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.1 + 0.2,
-        a: Math.random() * Math.PI * 2,
-        tw: Math.random() * 0.015 + 0.004,
-        c: pick(palette)
-      }));
-    }
-    seed();
-
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* התפרצות קונפטי בלחיצה */
-    function spawnBurst(x, y) {
-      if (reduceMotion) return;
-      for (let i = 0; i < 28; i++) {
-        const ang = Math.random() * Math.PI * 2;
-        const sp = Math.random() * 4.5 + 1.5;
-        bursts.push({
-          x, y,
-          vx: Math.cos(ang) * sp,
-          vy: Math.sin(ang) * sp - 1.2,
-          r: Math.random() * 2.6 + 1.2,
-          life: 1,
-          dec: Math.random() * 0.012 + 0.012,
-          c: pick(palette)
-        });
-      }
-    }
+    /* ─── פס התקדמות — transform בלבד, ממותן ב-rAF ─── */
+    const progressBar = document.getElementById('progressBar');
+    let progressTick = false;
+    addEventListener('scroll', () => {
+      if (progressTick) return;
+      progressTick = true;
+      requestAnimationFrame(() => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        progressBar.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')';
+        progressTick = false;
+      });
+    }, { passive: true });
 
-    function frame() {
-      ctx.clearRect(0, 0, W, H);
-
-      for (const s of stars) {
-        s.a += s.tw;
-        ctx.globalAlpha = 0.2 + Math.abs(Math.sin(s.a)) * 0.45;
-        ctx.fillStyle = 'rgb(' + s.c.join(',') + ')';
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      for (const p of particles) {
-        p.a += p.tw;
-        p.x += p.vx + Math.sin(p.a) * 0.15;
-        p.y += p.vy;
-        if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
-        if (p.x < -10) p.x = W + 10;
-        if (p.x > W + 10) p.x = -10;
-
-        const glow = 0.35 + Math.abs(Math.sin(p.a)) * 0.55;
-        ctx.globalAlpha = glow;
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.2);
-        g.addColorStop(0, 'rgba(' + p.c.join(', ') + ', 0.85)');
-        g.addColorStop(1, 'rgba(' + p.c.join(', ') + ', 0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      for (let i = bursts.length - 1; i >= 0; i--) {
-        const b = bursts[i];
-        b.x += b.vx;
-        b.y += b.vy;
-        b.vx *= 0.985;
-        b.vy = b.vy * 0.985 + 0.06;
-        b.life -= b.dec;
-        if (b.life <= 0) { bursts.splice(i, 1); continue; }
-        ctx.globalAlpha = b.life;
-        ctx.fillStyle = 'rgb(' + b.c.join(',') + ')';
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r * b.life + 0.4, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(frame);
-    }
-    if (!reduceMotion) frame();
-
-    /* ══════════════ הופעה בגלילה ══════════════ */
-    const io = new IntersectionObserver(entries => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      }
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    /* ══════════════ מוני מספרים ══════════════ */
+    /* ─── מוני מספרים ─── */
     const counterIO = new IntersectionObserver(entries => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
         counterIO.unobserve(e.target);
         const el = e.target;
         const target = +el.dataset.count;
-        const t0 = performance.now(), dur = 1600;
-        (function tick(t) {
-          const p = Math.min((t - t0) / dur, 1);
-          const ease = 1 - Math.pow(1 - p, 3);
-          el.textContent = Math.round(target * ease);
+        const start = performance.now();
+        (function tick(now) {
+          const p = Math.min((now - start) / 1400, 1);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 4)));
           if (p < 1) requestAnimationFrame(tick);
-        })(t0);
-      }
-    }, { threshold: 0.6 });
+        })(start);
+      });
+    }, { threshold: .6 });
     document.querySelectorAll('.stat-num').forEach(el => counterIO.observe(el));
 
-    /* ══════════════ עץ אינטראקטיבי ══════════════ */
-    const treeSection = document.getElementById('tree');
+    /* ─── חשיפת הציטוט בגלילה ─── */
+    const revealIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); }
+      });
+    }, { threshold: .3 });
+    document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+    /* ─── תמיכה במקלדת לכפתורי div ─── */
+    function bindPress(el, fn) {
+      el.addEventListener('click', fn);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+      });
+    }
+
+    /* ─── פתיחת העץ ─── */
+    let treeOpened = false;
     const rootCard = document.getElementById('rootCard');
-    const branchesGrid = document.querySelector('.branches');
+    const container = document.getElementById('branchesContainer');
+    const branches = document.querySelectorAll('.branch');
 
-    function burstFrom(el) {
-      const r = el.getBoundingClientRect();
-      spawnBurst(r.left + r.width / 2, r.top + Math.min(r.height / 2, 160));
-    }
+    bindPress(rootCard, () => {
+      if (treeOpened) return;
+      treeOpened = true;
 
-    function closeBranch(b) {
-      b.classList.remove('open');
-      b.querySelector('.branch-head').setAttribute('aria-expanded', 'false');
-    }
+      document.getElementById('rootHint').classList.add('hide');
+      rootCard.classList.add('glow');
+      rootCard.setAttribute('aria-expanded', 'true');
 
-    rootCard.addEventListener('click', () => {
-      const open = treeSection.classList.toggle('tree-is-open');
-      rootCard.classList.toggle('open', open);
-      rootCard.setAttribute('aria-expanded', open);
-      if (open) {
-        burstFrom(rootCard);
-        setTimeout(() => {
-          document.querySelector('.tree-lower').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 350);
-      } else {
-        document.querySelectorAll('.branch.open').forEach(closeBranch);
-        branchesGrid.classList.remove('has-open');
-      }
+      container.style.display = 'grid';
+      void container.offsetWidth; // reflow יחיד ומכוון להצתת האנימציות
+      container.classList.add('active'); // הגזע צומח (scaleY — קומפוזיטור)
+
+      /* כניסה מדורגת של הענפים */
+      branches.forEach((b, i) => {
+        setTimeout(() => b.classList.add('visible'), reduceMotion ? 0 : 350 + i * 160);
+      });
+
+      setTimeout(() => {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
     });
 
-    document.querySelectorAll('.branch').forEach(branch => {
-      const head = branch.querySelector('.branch-head');
-      head.addEventListener('click', () => {
-        const wasOpen = branch.classList.contains('open');
-        document.querySelectorAll('.branch.open').forEach(closeBranch);
-        if (!wasOpen) {
-          branch.classList.add('open');
-          head.setAttribute('aria-expanded', 'true');
-          branch.style.transform = '';
-          burstFrom(branch);
-          setTimeout(() => branch.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    /* ─── אקורדיון הענפים ─── */
+    branches.forEach(branch => {
+      const header = branch.querySelector('.branch-header');
+      bindPress(header, () => {
+        const wasExpanded = branch.classList.contains('expanded');
+
+        document.querySelectorAll('.branch.expanded').forEach(b => {
+          b.classList.remove('expanded');
+          b.querySelector('.branch-header').setAttribute('aria-expanded', 'false');
+        });
+
+        if (!wasExpanded) {
+          branch.classList.add('expanded');
+          header.setAttribute('aria-expanded', 'true');
+          setTimeout(() => {
+            branch.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 300);
         }
-        branchesGrid.classList.toggle('has-open', !wasOpen);
-      });
-      /* לחיצה על שאר הכרטיס (מחוץ לגוף הפתוח) גם פותחת */
-      branch.addEventListener('click', e => {
-        if (e.target.closest('.branch-head') || e.target.closest('.branch-body')) return;
-        head.click();
+        container.classList.toggle('has-open', !wasExpanded);
       });
     });
-
-    /* ══════════════ אפקט הטיה תלת־ממדית ══════════════ */
-    const canTilt = matchMedia('(pointer: fine)').matches && !reduceMotion;
-    if (canTilt) {
-      document.querySelectorAll('.tilt').forEach(card => {
-        card.addEventListener('mousemove', ev => {
-          if (card.classList.contains('open')) return;
-          const r = card.getBoundingClientRect();
-          const px = (ev.clientX - r.left) / r.width - 0.5;
-          const py = (ev.clientY - r.top) / r.height - 0.5;
-          card.style.transform =
-            `perspective(900px) rotateY(${px * -7}deg) rotateX(${py * 6}deg) translateY(-6px)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-        });
-      });
-    }
   </script>
 </body>
-
 </html>
