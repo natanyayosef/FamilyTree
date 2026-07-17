@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FBF7EF">
   <title>עץ המשפחה · משפחת נתניה</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Suez+One&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     /* ═══════════════════════════════════════════════
-       משפחת נתניה · עץ משפחה
+       משפחת נתניה · עץ משפחה — מסע בין הדורות
        כל האנימציות על transform/opacity בלבד — GPU
        ═══════════════════════════════════════════════ */
 
@@ -44,12 +45,19 @@
       min-height: 100vh;
       overflow-x: hidden;
       background-color: var(--bg);
-      /* רקע סטטי — מצויר פעם אחת בלבד */
-      background-image:
-        radial-gradient(ellipse 70% 45% at 50% -5%, rgba(239, 217, 143, 0.4), transparent 60%),
-        radial-gradient(ellipse 45% 35% at 92% 100%, rgba(203, 223, 188, 0.45), transparent 65%),
-        radial-gradient(ellipse 40% 30% at 5% 85%, rgba(240, 200, 190, 0.3), transparent 60%);
-      background-attachment: fixed;
+    }
+
+    /* רקע קבוע — נצבע פעם אחת; בלי background-attachment שמאט מובייל */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 45% at 50% -5%, rgba(242, 196, 110, 0.38), transparent 60%),
+        radial-gradient(ellipse 45% 35% at 92% 100%, rgba(150, 200, 150, 0.32), transparent 65%),
+        radial-gradient(ellipse 40% 30% at 5% 85%, rgba(240, 170, 165, 0.3), transparent 60%),
+        radial-gradient(ellipse 30% 25% at 12% 12%, rgba(160, 190, 235, 0.24), transparent 60%);
     }
 
     ::selection { background: var(--gold-light); color: var(--ink); }
@@ -67,7 +75,7 @@
       position: fixed;
       top: 0; right: 0; left: 0;
       height: 3px;
-      background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--gold-deep));
+      background: linear-gradient(90deg, #E8A93C, #D95B43, #8B6FC9);
       transform: scaleX(0);
       transform-origin: right;
       z-index: 50;
@@ -206,15 +214,18 @@
       line-height: 1;
     }
     .stat-label { margin-top: 6px; font-size: .9rem; color: var(--muted); }
+    .stat:nth-child(2) .stat-num { color: #D95B43; }
+    .stat:nth-child(3) .stat-num { color: #2FA8A0; }
+    .stat:nth-child(4) .stat-num { color: #8B6FC9; }
 
-    /* ═══════════════ אזור העץ ═══════════════ */
+    /* ═══════════════ אזור המסע ═══════════════ */
 
     .tree-section {
       position: relative;
       z-index: 1;
-      max-width: 1040px;
+      max-width: 720px;
       margin: 64px auto 0;
-      padding: 0 20px 80px;
+      padding: 0 20px 60px;
       text-align: center;
     }
 
@@ -222,7 +233,7 @@
     .root-card {
       position: relative;
       display: inline-block;
-      width: min(520px, 100%);
+      width: min(540px, 100%);
       padding: 42px 32px 36px;
       border-radius: 26px;
       border: 2px solid transparent;
@@ -238,9 +249,7 @@
       transform: translateY(-5px) scale(1.015);
       box-shadow: 0 22px 55px var(--gold-glow);
     }
-    .root-card.glow {
-      box-shadow: 0 10px 45px var(--gold-glow);
-    }
+    .root-card.glow { box-shadow: 0 10px 45px var(--gold-glow); }
 
     .crown {
       width: 46px; height: 46px;
@@ -285,139 +294,128 @@
       50% { transform: scale(1.06); }
     }
 
-    /* ברק חולף — transform בלבד */
+    /* ברק חולף — הרצועה חיה בתוך מיכל חיתוך, transform בלבד */
     .shimmer {
       position: absolute;
-      top: 0; right: 0;
-      width: 55%; height: 100%;
-      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.75) 50%, transparent 80%);
-      transform: translateX(160%) skewX(-18deg);
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
       pointer-events: none;
       z-index: 5;
     }
-    .root-card:hover .shimmer,
-    .branch:hover .shimmer { animation: sweep .9s ease-out; }
-    @keyframes sweep {
-      from { transform: translateX(160%) skewX(-18deg); }
-      to   { transform: translateX(-320%) skewX(-18deg); }
-    }
-
-    /* ═══════════════ הענפים ═══════════════ */
-
-    .branches {
-      display: none; /* JS מחליף ל-grid */
-      grid-template-columns: 1fr 6px 1fr;
-      gap: 54px 0;
-      position: relative;
-      text-align: right;
-      padding-top: 36px;
-    }
-
-    /* ─── הגזע המרכזי — צומח ב-scaleY (קומפוזיטור בלבד) ─── */
-    .central-trunk {
-      position: absolute;
-      top: 0; right: 50%;
-      width: 6px; height: 100%;
-      background: linear-gradient(180deg, var(--gold), var(--gold-light) 50%, var(--gold));
-      background-size: 100% 300%;
-      transform: translateX(50%) scaleY(0);
-      transform-origin: top;
-      border-radius: 3px;
-      box-shadow: 0 0 16px var(--gold-glow);
-      transition: transform 1.7s cubic-bezier(.25, .8, .25, 1);
-      animation: sapFlow 5s linear infinite;
-      z-index: 0;
-    }
-    .branches.active .central-trunk { transform: translateX(50%) scaleY(1); }
-    @keyframes sapFlow { to { background-position: 0 -300%; } }
-
-    /* ─── כרטיס ענף ─── */
-    .branch {
-      position: relative;
-      z-index: 10;
-      background: var(--card);
-      border: 1px solid rgba(200, 155, 42, 0.22);
-      border-radius: 20px;
-      box-shadow: 0 8px 28px var(--shadow);
-      overflow: visible;
-
-      /* מצב כניסה — נחשף ב-JS עם השהיה מדורגת */
-      opacity: 0;
-      transform: translateY(38px) scale(.94);
-      transition:
-        opacity .5s ease,
-        transform .55s cubic-bezier(.3, 1.3, .4, 1),
-        box-shadow .35s ease,
-        border-color .35s ease;
-    }
-    .branch.visible { opacity: 1; transform: translateY(0) scale(1); }
-
-    .branch:hover {
-      box-shadow: 0 16px 42px var(--shadow-hover);
-      border-color: var(--gold);
-    }
-
-    .branch.expanded {
-      border-color: transparent;
-      background:
-        linear-gradient(var(--card), var(--card)) padding-box,
-        linear-gradient(135deg, var(--gold-light), var(--gold) 45%, #F6EBC3 65%, var(--gold-deep)) border-box;
-      border: 1px solid transparent;
-      box-shadow: 0 20px 55px var(--shadow-hover), 0 0 30px rgba(200, 155, 42, 0.15);
-    }
-
-    /* אחים מתעמעמים כשענף פתוח */
-    .branches.has-open .branch.visible:not(.expanded) {
-      opacity: .55;
-      transform: scale(.975);
-    }
-    .branches.has-open .branch.visible:not(.expanded):hover {
-      opacity: .9;
-      transform: scale(1);
-    }
-
-    /* הברק בתוך הכרטיס לא זולג מהפינות */
-    .branch .shimmer { border-radius: 20px; overflow: hidden; }
-
-    /* ─── פריסה לסירוגין + זיגזג ─── */
-    .branch:nth-of-type(odd)  { grid-column: 1; margin-left: 52px; }
-    .branch:nth-of-type(even) { grid-column: 3; margin-right: 52px; margin-top: 62px; }
-
-    /* ─── קווי חיבור לגזע — scaleX בלבד ─── */
-    .branch-connector {
-      position: absolute;
-      top: 46px;
-      width: 44px; height: 4px;
-      background: linear-gradient(90deg, var(--gold-light), var(--gold));
-      border-radius: 2px;
-      z-index: 1;
-      transform: scaleX(0);
-      transition: transform .55s cubic-bezier(.34, 1.4, .5, 1) .25s;
-    }
-    .branch.visible .branch-connector { transform: scaleX(1); }
-
-    .branch:nth-of-type(odd) .branch-connector  { right: 100%; transform-origin: left center; }
-    .branch:nth-of-type(even) .branch-connector { left: 100%; transform-origin: right center; }
-
-    .branch-connector::before {
+    .shimmer::after {
       content: '';
       position: absolute;
-      top: -6px;
+      top: 0; bottom: 0;
+      right: -60%;
+      width: 55%;
+      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.75) 50%, transparent 80%);
+      transform: skewX(-18deg);
+    }
+    .root-card:hover .shimmer::after,
+    .branch:hover .shimmer::after { animation: sweep .9s ease-out; }
+    @keyframes sweep {
+      from { transform: skewX(-18deg) translateX(0); }
+      to   { transform: skewX(-18deg) translateX(-480%); }
+    }
+
+    /* ═══════════════ המסע — תחנה אחר תחנה ═══════════════ */
+
+    .journey { display: none; }
+    .journey.active { display: block; }
+
+    .step { display: none; }
+    .step.revealed { display: block; }
+
+    /* קטע גזע שצומח בין תחנה לתחנה */
+    .trunk-seg {
+      position: relative;
+      width: 6px; height: 68px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--gold), var(--gold-light));
+      border-radius: 3px;
+      box-shadow: 0 0 14px var(--gold-glow);
+      transform-origin: top;
+      animation: grow .55s cubic-bezier(.3, .8, .3, 1) both;
+    }
+    .trunk-seg::after { /* צומת בתחתית */
+      content: '';
+      position: absolute;
+      bottom: -7px; right: 50%;
       width: 16px; height: 16px;
       background: #FFF;
       border: 4px solid var(--gold);
       border-radius: 50%;
       box-shadow: 0 0 10px var(--gold-glow);
+      transform: translateX(50%) scale(0);
+      animation: nodePop .4s cubic-bezier(.34, 1.6, .6, 1) .4s both;
     }
-    .branch:nth-of-type(odd) .branch-connector::before  { left: -9px; }
-    .branch:nth-of-type(even) .branch-connector::before { right: -9px; }
+    @keyframes grow { from { transform: scaleY(0); } }
+    @keyframes nodePop { to { transform: translateX(50%) scale(1); } }
+
+    .step .branch {
+      animation: stepIn .6s cubic-bezier(.3, 1.25, .4, 1) .35s both;
+    }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(28px) scale(.95); }
+    }
+
+    /* ─── כרטיס ענף ─── */
+    .branch {
+      /* צבע אישי לכל תחנה — נקבע ב-style של כל כרטיס */
+      --ac: var(--gold);
+      --ac2: var(--gold-deep);
+      --tint: #FFFDF6;
+      position: relative;
+      width: min(560px, 100%);
+      margin: 14px auto 0;
+      background: linear-gradient(170deg, var(--tint), #FFFFFF 60%);
+      border: 1px solid rgba(90, 80, 60, 0.12);
+      border-radius: 20px;
+      box-shadow: 0 8px 28px var(--shadow);
+      text-align: right;
+      transition: box-shadow .35s ease, border-color .35s ease, opacity .4s ease, transform .4s ease;
+    }
+    .branch:hover {
+      box-shadow: 0 16px 42px var(--shadow-hover);
+      border-color: var(--ac);
+    }
+
+    /* סרט צבע אישי בראש הכרטיס */
+    .branch::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 26px; left: 26px;
+      height: 4px;
+      border-radius: 0 0 6px 6px;
+      background: linear-gradient(90deg, var(--ac), var(--ac2));
+      opacity: .9;
+    }
+
+    .branch.expanded {
+      border: 1px solid transparent;
+      background:
+        linear-gradient(170deg, var(--tint), #FFFFFF 60%) padding-box,
+        linear-gradient(135deg, var(--ac), var(--tint) 50%, var(--ac2)) border-box;
+      box-shadow: 0 20px 55px var(--shadow-hover), 0 14px 44px -18px var(--ac);
+    }
+
+    /* תחנות קודמות מתעמעמות כשתחנה פתוחה */
+    .journey.has-open .step.revealed .branch:not(.expanded) {
+      opacity: .6;
+      transform: scale(.98);
+    }
+    .journey.has-open .step.revealed .branch:not(.expanded):hover {
+      opacity: 1;
+      transform: scale(1);
+    }
 
     /* ─── מדליון סדר לידה ─── */
     .order-badge {
       position: absolute;
       top: -16px; right: 20px;
       width: 38px; height: 38px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, var(--gold-deep));
+      background: linear-gradient(135deg, var(--ac), var(--ac2));
       color: #FFF;
       border: 3px solid #FFF;
       border-radius: 50%;
@@ -438,21 +436,20 @@
       -webkit-tap-highlight-color: transparent;
     }
     .branch-header:focus-visible,
-    .root-card:focus-visible {
+    .root-card:focus-visible,
+    .next-btn:focus-visible {
       outline: 3px solid var(--gold);
       outline-offset: 3px;
     }
 
     .couple {
-      display: flex; align-items: center; flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 6px;
     }
-    .branch.solo .couple,
-    .branch .couple.center { justify-content: center; }
 
     .person { font-family: var(--font-title); font-size: 1.6rem; color: var(--ink); }
-    .person.main-child { color: var(--gold-deep); }
+    .person.main-child { color: var(--ac2); }
     .spouse { color: var(--muted); font-size: 1.3rem; }
 
     .heart {
@@ -468,7 +465,7 @@
       48% { transform: scale(1); }
     }
 
-    .head-teaser { font-size: .95rem; color: var(--muted); }
+    .head-teaser { font-size: .95rem; color: var(--muted); text-align: center; }
 
     /* ─── חץ פתיחה ─── */
     .expand-indicator {
@@ -476,10 +473,10 @@
       bottom: -16px; left: 50%;
       width: 32px; height: 32px;
       background: var(--card);
-      border: 2px solid var(--gold);
+      border: 2px solid var(--ac);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      color: var(--gold);
+      color: var(--ac);
       box-shadow: 0 4px 12px var(--shadow);
       z-index: 12;
       transform: translateX(-50%);
@@ -488,7 +485,7 @@
     .branch-header:hover .expand-indicator { transform: translateX(-50%) scale(1.15); }
     .branch.expanded .expand-indicator {
       transform: translateX(-50%) rotate(180deg);
-      background: var(--gold);
+      background: var(--ac);
       color: #FFF;
     }
 
@@ -500,7 +497,9 @@
     }
     .branch.expanded .branch-body { grid-template-rows: 1fr; }
     .branch-body-inner { overflow: hidden; min-height: 0; padding: 0 24px; }
-    .branch-body-inner > :last-child { margin-bottom: 28px; }
+    /* מרווח מהעיגול שגולש מתחתית הכותרת — מונע דריסת מלל */
+    .branch-body-inner > :first-child { margin-top: 30px; }
+    .branch-body-inner > :last-child { margin-bottom: 26px; }
 
     /* ─── פריטים שקופצים פנימה בפתיחה ─── */
     .pop {
@@ -521,14 +520,14 @@
       display: flex; align-items: center; gap: 12px;
       margin: 8px 0 18px;
       font-size: .88rem;
-      color: var(--gold-deep);
+      color: var(--ac2);
       font-weight: 500;
       letter-spacing: .08em;
     }
     .kids-divider::before, .kids-divider::after {
       content: '';
       flex: 1; height: 1px;
-      background: rgba(200, 155, 42, 0.35);
+      background: rgba(90, 80, 60, 0.18);
     }
 
     .kids { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
@@ -574,23 +573,45 @@
       box-shadow: 0 2px 6px var(--gold-glow);
     }
 
-    /* ─── כרטיס זיכרון — יהודית ז״ל ─── */
-    .branch.memorial { border-color: rgba(108, 117, 125, 0.3); }
-    .branch.memorial:hover { border-color: var(--slate); }
-    .branch.memorial.expanded {
-      background:
-        linear-gradient(var(--card), var(--card)) padding-box,
-        linear-gradient(135deg, #DEE2E6, #ADB5BD 50%, #868E96) border-box;
-      box-shadow: 0 20px 55px rgba(108, 117, 125, 0.22);
+    /* ─── כפתור "ממשיכים אל..." ─── */
+    .next-wrap { text-align: center; margin-top: 22px; }
+    .next-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #FFF;
+      cursor: pointer;
+      background: linear-gradient(120deg, var(--ac), var(--ac2));
+      box-shadow: 0 10px 26px -8px var(--ac2);
+      transition: transform .3s cubic-bezier(.34, 1.5, .5, 1), box-shadow .3s ease;
     }
-    .branch.memorial .order-badge { background: linear-gradient(135deg, #CED4DA, #868E96); }
-    .branch.memorial .branch-connector { background: linear-gradient(90deg, #DEE2E6, #ADB5BD); }
-    .branch.memorial .branch-connector::before { border-color: #ADB5BD; box-shadow: 0 0 10px rgba(173, 181, 189, 0.5); }
-    .branch.memorial .expand-indicator { border-color: #ADB5BD; color: var(--slate); }
-    .branch.memorial.expanded .expand-indicator { background: var(--slate); color: #FFF; }
+    .next-btn:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 16px 34px -8px var(--ac2);
+    }
+    .next-btn svg { animation: bobDown 1.6s ease-in-out infinite; }
+    @keyframes bobDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
 
-    .memorial-name { font-family: var(--font-title); font-size: 1.8rem; color: #495057; }
-    .memorial-zl { font-size: .98rem; color: #868E96; margin-top: 4px; letter-spacing: .2em; padding-right: .2em; }
+    /* ─── כרטיס זיכרון — יהודית ז״ל ─── */
+    .branch.memorial {
+      --ac: #97A3AE;
+      --ac2: #67727D;
+      --tint: #F5F7F9;
+      border-color: rgba(108, 117, 125, 0.3);
+    }
+    .branch.memorial:hover { border-color: var(--slate); }
+    .step.memorial-step .trunk-seg { background: linear-gradient(180deg, var(--gold), #ADB5BD); }
+    .step.memorial-step .trunk-seg::after { border-color: #ADB5BD; }
+
+    .memorial-name { font-family: var(--font-title); font-size: 1.8rem; color: #495057; text-align: center; }
+    .memorial-zl { font-size: .98rem; color: #868E96; margin-top: 4px; letter-spacing: .2em; padding-right: .2em; text-align: center; }
     .memorial-verse {
       font-family: var(--font-serif);
       font-size: .98rem;
@@ -602,7 +623,7 @@
     /* נר נשמה — CSS, להבה ב-transform בלבד */
     .candle-wrap {
       display: flex; justify-content: center;
-      padding-top: 30px;
+      padding-top: 4px;
       margin-bottom: 16px;
     }
     .candle {
@@ -645,15 +666,73 @@
       font-family: var(--font-title);
       font-size: 1.7rem;
       color: #FFF;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, var(--gold-deep));
+      background: linear-gradient(135deg, var(--ac), var(--ac2));
       border-radius: 50%;
-      box-shadow: 0 6px 16px var(--gold-glow);
+      box-shadow: 0 8px 20px -6px var(--ac2);
     }
     .solo-quote {
       font-family: var(--font-serif);
       font-size: .95rem;
       color: var(--muted);
       text-align: center;
+    }
+
+    /* ═══════════════ סיום המסע ═══════════════ */
+
+    .finale { display: none; }
+    .finale.show { display: block; }
+
+    .finale-card {
+      position: relative;
+      width: min(560px, 100%);
+      margin: 14px auto 0;
+      padding: 44px 30px 38px;
+      border-radius: 26px;
+      border: 2px solid transparent;
+      background:
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, #E8A93C, #D95B43 30%, #E06A9B 55%, #8B6FC9 80%, #2FA8A0) border-box;
+      box-shadow: 0 18px 50px var(--shadow-hover);
+      animation: stepIn .7s cubic-bezier(.3, 1.25, .4, 1) .35s both;
+    }
+    .finale-star {
+      font-size: 2.4rem;
+      color: var(--gold);
+      animation: float 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    .finale-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      color: var(--gold-deep);
+      margin-top: 8px;
+    }
+    .finale-text {
+      margin-top: 12px;
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .finale-text strong { color: var(--green); }
+    .back-top {
+      margin-top: 22px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 28px;
+      border: 2px solid var(--gold);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--gold-deep);
+      font-family: var(--font-body);
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .3s cubic-bezier(.34, 1.5, .5, 1), background .3s ease, color .3s ease;
+    }
+    .back-top:hover {
+      transform: translateY(-3px);
+      background: var(--gold);
+      color: #FFF;
     }
 
     /* ═══════════════ ציטוט ═══════════════ */
@@ -663,7 +742,6 @@
       z-index: 1;
       text-align: center;
       padding: 70px 20px;
-      margin-top: 30px;
     }
     .quote-text {
       font-family: var(--font-serif);
@@ -671,7 +749,7 @@
       line-height: 1.65;
       max-width: 720px;
       margin: 0 auto;
-      background: linear-gradient(120deg, #8B7355, var(--gold));
+      background: linear-gradient(120deg, #C98A1E, #D95B43 45%, #8B6FC9);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -701,26 +779,14 @@
 
     /* ═══════════════ מובייל ═══════════════ */
 
-    @media (max-width: 768px) {
-      .branches { grid-template-columns: 1fr; gap: 44px 0; }
-      .central-trunk { right: 11px; transform: translateX(0) scaleY(0); }
-      .branches.active .central-trunk { transform: translateX(0) scaleY(1); }
-
-      .branch:nth-of-type(odd),
-      .branch:nth-of-type(even) {
-        grid-column: 1;
-        margin: 0 44px 0 0;
-      }
-      .branch:nth-of-type(odd) .branch-connector,
-      .branch:nth-of-type(even) .branch-connector {
-        right: 100%; left: auto;
-        width: 32px;
-        transform-origin: left center;
-      }
-      .branch:nth-of-type(odd) .branch-connector::before,
-      .branch:nth-of-type(even) .branch-connector::before {
-        left: -9px; right: auto;
-      }
+    @media (max-width: 600px) {
+      .branch-header { padding: 26px 18px 24px; }
+      .branch-body-inner { padding: 0 18px; }
+      .order-badge { right: 14px; }
+      .next-btn { width: 100%; }
+      .trunk-seg { height: 54px; }
+      .person { font-size: 1.45rem; }
+      .spouse { font-size: 1.15rem; }
       .blob { display: none; }
     }
 
@@ -742,6 +808,7 @@
   <div class="progress" id="progressBar"></div>
 
   <!-- רקע חי וקליל -->
+  <div class="bg"></div>
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="blob b3"></div>
@@ -771,7 +838,7 @@
     </svg>
     <div class="hero-eyebrow">שורשים · צמיחה · המשכיות</div>
     <h1 class="hero-title">עץ המשפחה</h1>
-    <p class="hero-sub">שלושה דורות של בית אחד — <strong>משפחת נתניה</strong></p>
+    <p class="hero-sub">מסע בין שלושה דורות של בית אחד — <strong>משפחת נתניה</strong></p>
 
     <div class="stats">
       <div class="stat"><div class="stat-num" data-count="3">0</div><div class="stat-label">דורות</div></div>
@@ -784,7 +851,7 @@
   <main>
     <section class="tree-section">
 
-      <!-- ═══ כרטיס השורש ═══ -->
+      <!-- ═══ תחנת הפתיחה — ההורים ═══ -->
       <div class="root-wrap">
         <div class="root-card" id="rootCard" role="button" tabindex="0" aria-expanded="false">
           <div class="shimmer"></div>
@@ -795,222 +862,285 @@
           </div>
           <div class="root-names">משה <span class="amp">&amp;</span> ציפי</div>
           <p class="root-caption">האבן שממנה נבנה הכל · הורים לעשרה, סבא וסבתא ל-16</p>
-          <div class="root-hint" id="rootHint">לחץ לבניית העץ ✨</div>
+          <div class="root-hint" id="rootHint">לחצו כדי לצאת למסע ✨</div>
         </div>
       </div>
 
-      <!-- ═══ הענפים ═══ -->
-      <div class="branches" id="branchesContainer">
-        <div class="central-trunk"></div>
+      <!-- ═══ המסע ═══ -->
+      <div class="journey" id="journey">
 
-        <!-- 1 · הודיה -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">א</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">הודיה</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">שלמה</span>
+        <!-- תחנה 1 · הודיה -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#F2765D; --ac2:#C95540; --tint:#FFF3EF">
+            <div class="shimmer"></div>
+            <div class="order-badge">א</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">הודיה</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">שלמה</span>
+              </div>
+              <div class="head-teaser">הבת הבכורה · אמא לחמישה · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">הבת הבכורה · אמא לחמישה</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
-            <div class="kids">
-              <span class="twins pop" style="--pd:.18s"><span class="twins-tag">תאומים</span><span class="leaf">אסתי</span><span class="leaf">יענקי</span></span>
-              <span class="leaf pop" style="--pd:.26s">דודי</span>
-              <span class="leaf pop" style="--pd:.34s">יוסף אלעזר</span>
-              <span class="leaf pop" style="--pd:.42s">צופית</span>
-            </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+              <div class="kids">
+                <span class="twins pop" style="--pd:.18s"><span class="twins-tag">תאומים</span><span class="leaf">אסתי</span><span class="leaf">יענקי</span></span>
+                <span class="leaf pop" style="--pd:.26s">דודי</span>
+                <span class="leaf pop" style="--pd:.34s">יוסף אלעזר</span>
+                <span class="leaf pop" style="--pd:.42s">צופית</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.55s">
+                <button class="next-btn">ממשיכים אל קובי ונטע <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 2 · קובי -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ב</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">קובי</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">נטע</span>
+        <!-- תחנה 2 · קובי -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#33ADA0; --ac2:#227D74; --tint:#EDF9F7">
+            <div class="shimmer"></div>
+            <div class="order-badge">ב</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">קובי</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">נטע</span>
+              </div>
+              <div class="head-teaser">הבן הבכור · אבא לשניים · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">הבן הבכור · אבא לשניים</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
-            <div class="kids">
-              <span class="leaf pop" style="--pd:.18s">אילון</span>
-              <span class="leaf pop" style="--pd:.26s">כרמל</span>
-            </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+              <div class="kids">
+                <span class="leaf pop" style="--pd:.18s">אילון</span>
+                <span class="leaf pop" style="--pd:.26s">כרמל</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.4s">
+                <button class="next-btn">ממשיכים אל רזיאל ושושי <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 3 · רזיאל -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ג</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">רזיאל</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">שושי</span>
+        <!-- תחנה 3 · רזיאל -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#8B6FC9; --ac2:#6A4FA5; --tint:#F4F1FB">
+            <div class="shimmer"></div>
+            <div class="order-badge">ג</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">רזיאל</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">שושי</span>
+              </div>
+              <div class="head-teaser">אבא לשלושה · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">אבא לשלושה</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
-            <div class="kids">
-              <span class="leaf pop" style="--pd:.18s">מוישי</span>
-              <span class="leaf pop" style="--pd:.26s">שרי</span>
-              <span class="leaf pop" style="--pd:.34s">מאירי</span>
-            </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+              <div class="kids">
+                <span class="leaf pop" style="--pd:.18s">מוישי</span>
+                <span class="leaf pop" style="--pd:.26s">שרי</span>
+                <span class="leaf pop" style="--pd:.34s">מאירי</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.48s">
+                <button class="next-btn">ממשיכים אל פרת ושלומי <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 4 · פרת -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ד</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">פרת</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">שלומי</span>
+        <!-- תחנה 4 · פרת -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#E8A93C; --ac2:#BE851C; --tint:#FDF6E7">
+            <div class="shimmer"></div>
+            <div class="order-badge">ד</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">פרת</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">שלומי</span>
+              </div>
+              <div class="head-teaser">אמא לארבעה · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">אמא לארבעה</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
-            <div class="kids">
-              <span class="leaf pop" style="--pd:.18s">אודי</span>
-              <span class="leaf pop" style="--pd:.26s">יוני</span>
-              <span class="leaf pop" style="--pd:.34s">תמר</span>
-              <span class="leaf pop" style="--pd:.42s">הילי</span>
-            </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">הילדים</div>
+              <div class="kids">
+                <span class="leaf pop" style="--pd:.18s">אודי</span>
+                <span class="leaf pop" style="--pd:.26s">יוני</span>
+                <span class="leaf pop" style="--pd:.34s">תמר</span>
+                <span class="leaf pop" style="--pd:.42s">הילי</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.55s">
+                <button class="next-btn">עוברים אל יהודית ז״ל <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 5 · יהודית ז"ל -->
-        <article class="branch memorial">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ה</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="memorial-name">יהודית</div>
-            <div class="memorial-zl">זכרונה לברכה</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="candle-wrap pop" style="--pd:.15s">
-              <div class="candle"><span class="flame"></span></div>
+        <!-- תחנה 5 · יהודית ז"ל -->
+        <div class="step memorial-step">
+          <div class="trunk-seg"></div>
+          <article class="branch memorial">
+            <div class="shimmer"></div>
+            <div class="order-badge">ה</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="memorial-name">יהודית</div>
+              <div class="memorial-zl">זכרונה לברכה</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <p class="memorial-verse pop" style="--pd:.3s">״נֵר ה׳ נִשְׁמַת אָדָם״<br>אור שממשיך לדלוק בלב כולנו, לעד.</p>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="candle-wrap pop" style="--pd:.15s">
+                <div class="candle"><span class="flame"></span></div>
+              </div>
+              <p class="memorial-verse pop" style="--pd:.3s">״נֵר ה׳ נִשְׁמַת אָדָם״<br>אור שממשיך לדלוק בלב כולנו, לעד.</p>
+              <div class="next-wrap pop" style="--pd:.45s">
+                <button class="next-btn">ממשיכים אל שמחה וסם <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 6 · שמחה -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ו</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">שמחה</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">סם</span>
+        <!-- תחנה 6 · שמחה -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#E06A9B; --ac2:#B94E7C; --tint:#FDF0F5">
+            <div class="shimmer"></div>
+            <div class="order-badge">ו</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">שמחה</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">סם</span>
+              </div>
+              <div class="head-teaser">זוגיות שכולה שמחה · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">זוגיות שכולה שמחה</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">יחד</div>
-            <div class="kids">
-              <span class="leaf pop" style="--pd:.18s">✦ אהבה ✦</span>
-              <span class="leaf pop" style="--pd:.26s">✦ שמחה ✦</span>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">יחד</div>
+              <div class="kids">
+                <span class="leaf pop" style="--pd:.18s">✦ אהבה ✦</span>
+                <span class="leaf pop" style="--pd:.26s">✦ שמחה ✦</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.4s">
+                <button class="next-btn">ממשיכים אל יוסף <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
+
+        <!-- תחנה 7 · יוסף -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch solo" style="--ac:#4E8FD9; --ac2:#3568A8; --tint:#EEF5FC">
+            <div class="shimmer"></div>
+            <div class="order-badge">ז</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple"><span class="person main-child">יוסף</span></div>
+              <div class="head-teaser">הבן השביעי · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="solo-medal pop" style="--pd:.12s">י</div>
+              <p class="solo-quote pop" style="--pd:.24s">ענף צעיר וחזק בעץ המשפחה</p>
+              <div class="next-wrap pop" style="--pd:.38s">
+                <button class="next-btn">ממשיכים אל אלעזר וטליה <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 7 · יוסף -->
-        <article class="branch solo">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ז</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple"><span class="person main-child">יוסף</span></div>
-            <div class="head-teaser" style="text-align:center">הבן השביעי</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="solo-medal pop" style="--pd:.12s">י</div>
-            <p class="solo-quote pop" style="--pd:.24s">ענף צעיר וחזק בעץ המשפחה</p>
-          </div></div>
-        </article>
-
-        <!-- 8 · אלעזר -->
-        <article class="branch">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ח</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple">
-              <span class="person main-child">אלעזר</span>
-              <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
-              <span class="person spouse">טליה</span>
+        <!-- תחנה 8 · אלעזר -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch" style="--ac:#5FA45B; --ac2:#457F41; --tint:#F0F8EF">
+            <div class="shimmer"></div>
+            <div class="order-badge">ח</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple">
+                <span class="person main-child">אלעזר</span>
+                <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.6 1.2 6 3.8 2.4-2.6 3.8-3.8 6-3.8 3.5 0 5.5 3.5 4 7-2.5 4.6-10 9.5-10 9.5z" /></svg>
+                <span class="person spouse">טליה</span>
+              </div>
+              <div class="head-teaser">אבא לשניים · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-            <div class="head-teaser">אבא לשניים</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="kids-divider pop" style="--pd:.1s">הבנים</div>
-            <div class="kids">
-              <span class="leaf pop" style="--pd:.18s">יונתן</span>
-              <span class="leaf pop" style="--pd:.26s">בנימין</span>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="kids-divider pop" style="--pd:.1s">הבנים</div>
+              <div class="kids">
+                <span class="leaf pop" style="--pd:.18s">יונתן</span>
+                <span class="leaf pop" style="--pd:.26s">בנימין</span>
+              </div>
+              <div class="next-wrap pop" style="--pd:.4s">
+                <button class="next-btn">ממשיכים אל עמנואל <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
+
+        <!-- תחנה 9 · עמנואל -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch solo" style="--ac:#D97B4E; --ac2:#AD5C33; --tint:#FCF2EC">
+            <div class="shimmer"></div>
+            <div class="order-badge">ט</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple"><span class="person main-child">עמנואל</span></div>
+              <div class="head-teaser">הבן התשיעי · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
-          </div></div>
-        </article>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="solo-medal pop" style="--pd:.12s">ע</div>
+              <p class="solo-quote pop" style="--pd:.24s">שורשים עמוקים, שמיים פתוחים</p>
+              <div class="next-wrap pop" style="--pd:.38s">
+                <button class="next-btn">ממשיכים אל צירי <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 9 · עמנואל -->
-        <article class="branch solo">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">ט</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple"><span class="person main-child">עמנואל</span></div>
-            <div class="head-teaser" style="text-align:center">הבן התשיעי</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
-          </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="solo-medal pop" style="--pd:.12s">ע</div>
-            <p class="solo-quote pop" style="--pd:.24s">שורשים עמוקים, שמיים פתוחים</p>
-          </div></div>
-        </article>
+        <!-- תחנה 10 · צירי -->
+        <div class="step">
+          <div class="trunk-seg"></div>
+          <article class="branch solo" style="--ac:#BF63BF; --ac2:#944894; --tint:#FAF0FA">
+            <div class="shimmer"></div>
+            <div class="order-badge">י</div>
+            <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="couple"><span class="person main-child">צירי</span></div>
+              <div class="head-teaser">בת הזקונים · לחצו לגילוי</div>
+              <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+            </div>
+            <div class="branch-body"><div class="branch-body-inner">
+              <div class="solo-medal pop" style="--pd:.12s">צ</div>
+              <p class="solo-quote pop" style="--pd:.24s">הצעירה שסוגרת את המעגל באהבה</p>
+              <div class="next-wrap pop" style="--pd:.38s">
+                <button class="next-btn finish">סיום המסע ✨</button>
+              </div>
+            </div></div>
+          </article>
+        </div>
 
-        <!-- 10 · צירי -->
-        <article class="branch solo">
-          <div class="shimmer"></div>
-          <div class="branch-connector"></div>
-          <div class="order-badge">י</div>
-          <div class="branch-header" role="button" tabindex="0" aria-expanded="false">
-            <div class="couple"><span class="person main-child">צירי</span></div>
-            <div class="head-teaser" style="text-align:center">בת הזקונים</div>
-            <div class="expand-indicator"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+        <!-- ═══ סיום המסע ═══ -->
+        <div class="finale" id="finale">
+          <div class="trunk-seg"></div>
+          <div class="finale-card">
+            <span class="finale-star">✦</span>
+            <div class="finale-title">המסע הושלם!</div>
+            <p class="finale-text">
+              עברתם בכל ענפי העץ — <strong>10 ילדים</strong>, <strong>16 נכדים ונכדות</strong>,<br>
+              דור אחר דור של אהבה שממשיכה לצמוח.
+            </p>
+            <button class="back-top" id="backTop">↑ חזרה אל משה וציפי</button>
           </div>
-          <div class="branch-body"><div class="branch-body-inner">
-            <div class="solo-medal pop" style="--pd:.12s">צ</div>
-            <p class="solo-quote pop" style="--pd:.24s">הצעירה שסוגרת את המעגל באהבה</p>
-          </div></div>
-        </article>
+        </div>
 
       </div>
     </section>
@@ -1071,7 +1201,7 @@
     }, { threshold: .3 });
     document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
 
-    /* ─── תמיכה במקלדת לכפתורי div ─── */
+    /* ─── תמיכה במקלדת לרכיבים לחיצים ─── */
     function bindPress(el, fn) {
       el.addEventListener('click', fn);
       el.addEventListener('keydown', e => {
@@ -1079,54 +1209,87 @@
       });
     }
 
-    /* ─── פתיחת העץ ─── */
-    let treeOpened = false;
+    /* ═══════════ לוגיקת המסע ═══════════ */
+    const journey = document.getElementById('journey');
+    const steps = Array.from(journey.querySelectorAll('.step'));
+    const finale = document.getElementById('finale');
     const rootCard = document.getElementById('rootCard');
-    const container = document.getElementById('branchesContainer');
-    const branches = document.querySelectorAll('.branch');
 
+    /* חשיפת תחנה במסע */
+    function revealStep(i) {
+      if (i >= steps.length) { showFinale(); return; }
+      const step = steps[i];
+      if (!step.classList.contains('revealed')) {
+        step.classList.add('revealed');
+      }
+      setTimeout(() => {
+        step.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+
+    function showFinale() {
+      finale.classList.add('show');
+      setTimeout(() => {
+        finale.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+
+    function collapseAll() {
+      journey.querySelectorAll('.branch.expanded').forEach(b => {
+        b.classList.remove('expanded');
+        b.querySelector('.branch-header').setAttribute('aria-expanded', 'false');
+      });
+      journey.classList.remove('has-open');
+    }
+
+    /* לחיצה על ההורים — יציאה למסע, ירידה אל הילד הראשון */
+    let journeyStarted = false;
     bindPress(rootCard, () => {
-      if (treeOpened) return;
-      treeOpened = true;
-
+      if (journeyStarted) {
+        revealStep(0); /* לחיצה חוזרת — פשוט חוזרים לתחנה הראשונה */
+        return;
+      }
+      journeyStarted = true;
       document.getElementById('rootHint').classList.add('hide');
       rootCard.classList.add('glow');
       rootCard.setAttribute('aria-expanded', 'true');
-
-      container.style.display = 'grid';
-      void container.offsetWidth; // reflow יחיד ומכוון להצתת האנימציות
-      container.classList.add('active'); // הגזע צומח (scaleY — קומפוזיטור)
-
-      /* כניסה מדורגת של הענפים */
-      branches.forEach((b, i) => {
-        setTimeout(() => b.classList.add('visible'), reduceMotion ? 0 : 350 + i * 160);
-      });
-
-      setTimeout(() => {
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 500);
+      journey.classList.add('active');
+      revealStep(0);
     });
 
-    /* ─── אקורדיון הענפים ─── */
-    branches.forEach(branch => {
+    /* לחיצה על תחנה — פותחת את הילדים שלה (אקורדיון) */
+    steps.forEach(step => {
+      const branch = step.querySelector('.branch');
       const header = branch.querySelector('.branch-header');
       bindPress(header, () => {
         const wasExpanded = branch.classList.contains('expanded');
-
-        document.querySelectorAll('.branch.expanded').forEach(b => {
-          b.classList.remove('expanded');
-          b.querySelector('.branch-header').setAttribute('aria-expanded', 'false');
-        });
-
+        collapseAll();
         if (!wasExpanded) {
           branch.classList.add('expanded');
           header.setAttribute('aria-expanded', 'true');
+          journey.classList.add('has-open');
           setTimeout(() => {
-            branch.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            branch.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 300);
         }
-        container.classList.toggle('has-open', !wasExpanded);
       });
+    });
+
+    /* כפתורי "ממשיכים אל..." — התחנה הנוכחית מצטמצמת, הבאה נחשפת */
+    steps.forEach((step, i) => {
+      const nextBtn = step.querySelector('.next-btn');
+      if (!nextBtn) return;
+      nextBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        collapseAll();
+        revealStep(i + 1);
+      });
+    });
+
+    /* חזרה לראש העץ */
+    document.getElementById('backTop').addEventListener('click', () => {
+      collapseAll();
+      rootCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   </script>
 </body>
